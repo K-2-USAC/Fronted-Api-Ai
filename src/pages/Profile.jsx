@@ -1,34 +1,65 @@
-import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import { useAuthStore } from '../store/authStore';
-import { useUser } from '../hooks/useUser';
-import { User, Mail, Shield, Camera, Loader2, Phone, BadgeCheck, AlertCircle } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { useAuthStore } from "../store/authStore";
+import { useUser } from "../hooks/useUser";
+import {
+  User,
+  Mail,
+  Shield,
+  Camera,
+  Loader2,
+  Phone,
+  BadgeCheck,
+  AlertCircle,
+  Fingerprint,
+  Eye,
+  EyeOff,
+  Copy,
+  Check,
+} from "lucide-react";
 
 const Profile = () => {
-  const user = useAuthStore(state => state.user);
-  const updateUser = useAuthStore(state => state.updateUser);
-  const { getUserProfile, updateUserProfile, isLoading, error: apiError } = useUser();
+  const user = useAuthStore((state) => state.user);
+  const updateUser = useAuthStore((state) => state.updateUser);
+  const {
+    getUserProfile,
+    updateUserProfile,
+    isLoading,
+    error: apiError,
+  } = useUser();
   const [isEditing, setIsEditing] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState("");
+  const [showUid, setShowUid] = useState(false);
+  const [copied, setCopied] = useState(false);
   const [formData, setFormData] = useState({
-    name: user?.name || '',
-    surname: user?.surname || '',
-    phone: user?.phone || '',
-    email: user?.email || '',
+    name: user?.name || "",
+    surname: user?.surname || "",
+    phone: user?.phone || "",
+    email: user?.email || "",
   });
+
+  const handleCopyUid = () => {
+    const userId = user?.uid || user?.id;
+    if (userId) {
+      navigator.clipboard.writeText(userId);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const data = await getUserProfile();
+        updateUser(data); // This will update the store with the full user object including uid
         setFormData({
-          name: data.name || '',
-          surname: data.surname || '',
-          phone: data.phone || '',
-          email: data.email || '',
+          name: data.name || "",
+          surname: data.surname || "",
+          phone: data.phone || "",
+          email: data.email || "",
         });
       } catch (err) {
-        console.error('Failed to fetch profile:', err);
+        console.error("Failed to fetch profile:", err);
       }
     };
     fetchProfile();
@@ -36,28 +67,28 @@ const Profile = () => {
 
   const handleSave = async () => {
     try {
-      setSuccessMessage('');
+      setSuccessMessage("");
       const { email, ...updateData } = formData;
       const response = await updateUserProfile(updateData);
-      
+
       if (response.success) {
         updateUser(response.user);
-        setSuccessMessage('Profile updated successfully!');
+        setSuccessMessage("Profile updated successfully!");
         setIsEditing(false);
         // Clear message after 3 seconds
-        setTimeout(() => setSuccessMessage(''), 3000);
+        setTimeout(() => setSuccessMessage(""), 3000);
       }
     } catch (err) {
-      console.error('Failed to update profile:', err);
+      console.error("Failed to update profile:", err);
     }
   };
 
   const handleCancel = () => {
     setFormData({
-      name: user?.name || '',
-      surname: user?.surname || '',
-      phone: user?.phone || '',
-      email: user?.email || '',
+      name: user?.name || "",
+      surname: user?.surname || "",
+      phone: user?.phone || "",
+      email: user?.email || "",
     });
     setIsEditing(false);
   };
@@ -74,11 +105,13 @@ const Profile = () => {
     <div className="max-w-3xl mx-auto flex flex-col gap-8 w-full pb-12">
       <header>
         <h1 className="text-3xl font-bold tracking-tight mb-1">Profile</h1>
-        <p className="text-white/50">Manage your personal information and preferences.</p>
+        <p className="text-white/50">
+          Manage your personal information and preferences.
+        </p>
       </header>
 
       {successMessage && (
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-4 py-3 rounded-xl flex items-center gap-3"
@@ -89,7 +122,7 @@ const Profile = () => {
       )}
 
       {apiError && (
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl flex items-center gap-3"
@@ -99,7 +132,7 @@ const Profile = () => {
         </motion.div>
       )}
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="glass rounded-3xl overflow-hidden"
@@ -122,29 +155,30 @@ const Profile = () => {
         <div className="p-8 pt-16">
           <div className="flex justify-between items-start mb-8">
             <div>
-              <h2 className="text-2xl font-bold">{formData.name} {formData.surname}</h2>
+              <h2 className="text-2xl font-bold">
+                {formData.name} {formData.surname}
+              </h2>
               <p className="text-white/50">{formData.email}</p>
             </div>
             <div className="flex gap-3">
               {isEditing ? (
                 <>
-                  <button 
-                    onClick={handleCancel}
-                    className="btn-secondary"
-                  >
+                  <button onClick={handleCancel} className="btn-secondary">
                     Cancel
                   </button>
-                  <button 
+                  <button
                     onClick={handleSave}
                     disabled={isLoading}
                     className="btn-primary flex items-center gap-2"
                   >
-                    {isLoading && <Loader2 size={16} className="animate-spin" />}
+                    {isLoading && (
+                      <Loader2 size={16} className="animate-spin" />
+                    )}
                     Save Changes
                   </button>
                 </>
               ) : (
-                <button 
+                <button
                   onClick={() => setIsEditing(true)}
                   className="btn-secondary"
                 >
@@ -164,7 +198,9 @@ const Profile = () => {
                   <input
                     type="text"
                     value={formData.name}
-                    onChange={e => setFormData({ ...formData, name: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
                     className="input-field"
                     placeholder="Enter your name"
                   />
@@ -183,17 +219,21 @@ const Profile = () => {
                   <input
                     type="text"
                     value={formData.surname}
-                    onChange={e => setFormData({ ...formData, surname: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, surname: e.target.value })
+                    }
                     className="input-field"
                     placeholder="Enter your surname"
                   />
                 ) : (
                   <div className="h-12 flex items-center px-4 bg-white/5 border border-white/5 rounded-xl text-white/90">
-                    {formData.surname || <span className="text-white/20 italic">Not set</span>}
+                    {formData.surname || (
+                      <span className="text-white/20 italic">Not set</span>
+                    )}
                   </div>
                 )}
               </div>
-              
+
               <div className="space-y-2">
                 <label className="text-sm font-medium text-white/70 flex items-center gap-2">
                   <Mail size={16} /> Email Address
@@ -201,7 +241,9 @@ const Profile = () => {
                 <div className="h-12 flex items-center px-4 bg-white/5 border border-white/5 rounded-xl text-white/40 cursor-not-allowed">
                   {formData.email}
                 </div>
-                <p className="text-[10px] text-white/30 italic">Email cannot be changed</p>
+                <p className="text-[10px] text-white/30 italic">
+                  Email cannot be changed
+                </p>
               </div>
 
               <div className="space-y-2">
@@ -212,23 +254,69 @@ const Profile = () => {
                   <input
                     type="text"
                     value={formData.phone}
-                    onChange={e => setFormData({ ...formData, phone: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, phone: e.target.value })
+                    }
                     className="input-field"
                     placeholder="Enter your phone number"
                   />
                 ) : (
                   <div className="h-12 flex items-center px-4 bg-white/5 border border-white/5 rounded-xl text-white/90">
-                    {formData.phone || <span className="text-white/20 italic">Not set</span>}
+                    {formData.phone || (
+                      <span className="text-white/20 italic">Not set</span>
+                    )}
                   </div>
                 )}
               </div>
             </div>
 
-            <div className="pt-6 border-t border-white/10">
+            <div className="pt-6 border-t border-white/10 space-y-6">
               <h3 className="text-lg font-medium mb-4 flex items-center gap-2">
-                <Shield size={20} className="text-accent" /> Security
+                <Shield size={20} className="text-accent" /> Security & Account
               </h3>
-              <button className="btn-secondary text-sm">Change Password</button>
+
+              {/* UID Section */}
+              <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-xs font-bold text-white/30 uppercase tracking-widest flex items-center gap-2">
+                    <Fingerprint size={14} /> Your Unique ID (UID)
+                  </label>
+                  <button
+                    onClick={() => setShowUid(!showUid)}
+                    className="text-xs text-accent hover:text-white transition-colors flex items-center gap-1"
+                  >
+                    {showUid ? <EyeOff size={14} /> : <Eye size={14} />}
+                    {showUid ? "Hide" : "Show ID"}
+                  </button>
+                </div>
+                <div className="flex items-center gap-3">
+                  <code
+                    className={`flex-1 p-3 rounded-lg bg-dark/50 border border-white/5 text-sm font-mono transition-all ${showUid ? "text-white" : "text-white/5 blur-sm select-none"}`}
+                  >
+                    {showUid
+                      ? user?.uid || user?.id
+                      : "••••••••••••••••••••••••"}
+                  </code>
+                  <button
+                    onClick={handleCopyUid}
+                    disabled={!showUid}
+                    className={`p-3 rounded-lg transition-all ${copied ? "bg-emerald-500/20 text-emerald-400" : "bg-white/5 text-white/40 hover:text-white hover:bg-white/10 disabled:opacity-30"}`}
+                    title="Copy UID"
+                  >
+                    {copied ? <Check size={18} /> : <Copy size={18} />}
+                  </button>
+                </div>
+                <p className="text-[10px] text-white/20 mt-3 italic">
+                  Use this ID to recover your password if you lose access to
+                  your account.
+                </p>
+              </div>
+
+              <div className="flex gap-4">
+                <button className="btn-secondary text-sm">
+                  Change Password
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -238,4 +326,3 @@ const Profile = () => {
 };
 
 export default Profile;
-

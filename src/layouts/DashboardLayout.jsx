@@ -38,7 +38,7 @@ const DashboardLayout = () => {
         <div className="h-20 flex items-center px-6 border-b border-white/10 shrink-0 justify-between">
           {(isSidebarOpen || window.innerWidth < 768) && (
             <Link to="/dashboard" className="text-xl font-bold tracking-tighter truncate">
-              Nexus<span className="text-accent">AI</span>
+              Vox<span className="text-accent">2K</span>
             </Link>
           )}
           <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="hidden md:block text-white/50 hover:text-white">
@@ -97,7 +97,7 @@ const DashboardLayout = () => {
           <button onClick={() => setIsSidebarOpen(true)} className="text-white/50 hover:text-white">
             <Menu size={24} />
           </button>
-          <span className="ml-4 font-bold text-lg">NexusAI</span>
+          <span className="ml-4 font-bold text-lg">Vox2K</span>
         </div>
 
         <div className="flex-1 p-6 md:p-10 relative z-10 max-w-6xl mx-auto w-full">
