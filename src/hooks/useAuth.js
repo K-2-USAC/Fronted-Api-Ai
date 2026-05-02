@@ -70,9 +70,15 @@ export const useAuth = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await apiClient.post('/auth/google', { token: googleToken });
-      const { user, token } = response.data;
-      if (token) setAuth(user, token);
+      const response = await apiClient.post('/auth/google', { idToken: googleToken });
+      const resData = response.data;
+      
+      if (resData.success) {
+        const user = resData.userDetails || resData.user || resData.data?.user || resData.data?.userDetails || resData;
+        const token = resData.token || resData.accessToken || resData.jwt || resData.data?.token || resData.data?.accessToken || resData.userDetails?.token;
+        
+        setAuth(user, token || null);
+      }
       return response.data;
     } catch (err) {
       setError(err.response?.data?.message || 'Google login failed');

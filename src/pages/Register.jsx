@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../hooks/useAuth';
+import { GoogleLogin } from '@react-oauth/google';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -9,7 +10,7 @@ const Register = () => {
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { register, isLoading, error } = useAuth();
+  const { register, loginWithGoogle, isLoading, error } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -27,6 +28,21 @@ const Register = () => {
     } catch (err) {
       console.error('Registration failed:', err);
     }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      if (credentialResponse.credential) {
+        await loginWithGoogle(credentialResponse.credential);
+        navigate('/dashboard');
+      }
+    } catch (err) {
+      console.error('Google login failed:', err);
+    }
+  };
+
+  const handleGoogleError = () => {
+    console.error('Google Login Failed');
   };
 
   return (
@@ -125,6 +141,24 @@ const Register = () => {
             "Create Account"
           )}
         </button>
+
+        <div className="relative flex items-center py-4">
+          <div className="flex-grow border-t border-white/10"></div>
+          <span className="flex-shrink-0 mx-4 text-white/30 text-xs">OR CONTINUE WITH</span>
+          <div className="flex-grow border-t border-white/10"></div>
+        </div>
+
+        <div className="flex justify-center w-full">
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={handleGoogleError}
+            theme="filled_black"
+            shape="rectangular"
+            size="large"
+            text="signup_with"
+            width="100%"
+          />
+        </div>
 
         <p className="text-center text-sm text-white/50 mt-4">
           Already have an account? <Link to="/login" className="text-white hover:text-accent transition-colors">Sign in</Link>
