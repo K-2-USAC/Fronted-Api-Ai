@@ -23,7 +23,7 @@ import { Link } from 'react-router-dom';
 const Projects = () => {
   const user = useAuthStore(state => state.user);
   const isAdmin = user?.role === 'admin';
-  const { getProjects, updateProject, deleteProject, isLoading, error } = useProjects();
+  const { getProjects, updateProject, deleteProject, activateProject, isLoading, error } = useProjects();
   
   const [projects, setProjects] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -59,6 +59,20 @@ const Projects = () => {
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
       console.error('Delete failed:', err);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleActivate = async (id) => {
+    setActionLoading(true);
+    try {
+      await activateProject(id);
+      fetchProjects(searchTerm);
+      setSuccessMessage('Project activated successfully');
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      console.error('Activation failed:', err);
     } finally {
       setActionLoading(false);
     }
@@ -170,10 +184,26 @@ const Projects = () => {
               className="glass p-6 rounded-2xl group flex flex-col h-full border border-white/10 hover:border-accent/50 transition-all duration-300 relative overflow-hidden"
             >
               <div className="flex justify-between items-start mb-6">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent/40 to-accent/10 flex items-center justify-center text-white font-bold text-lg shadow-[0_0_15px_rgba(99,102,241,0.2)]">
-                  {project.name.charAt(0).toUpperCase()}
+                <div className="flex gap-2 items-center">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent/40 to-accent/10 flex items-center justify-center text-white font-bold text-lg shadow-[0_0_15px_rgba(99,102,241,0.2)]">
+                    {project.name.charAt(0).toUpperCase()}
+                  </div>
+                  {project.isActive ? (
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/20">ACTIVE</span>
+                  ) : (
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-white/10 text-white/50 border border-white/10">INACTIVE</span>
+                  )}
                 </div>
                 <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  {!project.isActive && (
+                    <button 
+                      onClick={() => handleActivate(project.uid || project._id)}
+                      className="p-2 text-white/40 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-lg transition-all"
+                      title="Set as Active"
+                    >
+                      <CheckCircle2 size={16} />
+                    </button>
+                  )}
                   <button 
                     onClick={() => setEditingProject({ ...project })}
                     className="p-2 text-white/40 hover:text-white hover:bg-white/5 rounded-lg transition-all"

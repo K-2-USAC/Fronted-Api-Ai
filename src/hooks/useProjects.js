@@ -63,6 +63,20 @@ export const useProjects = () => {
     }
   }, []);
 
+  const activateProject = useCallback(async (id) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await apiClient.patch(`/projects/${id}/activate`);
+      return response.data.project;
+    } catch (err) {
+      setError(err.response?.data?.message || 'Error activating project');
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   const deleteProject = useCallback(async (id) => {
     setIsLoading(true);
     setError(null);
@@ -83,6 +97,7 @@ export const useProjects = () => {
     createProject,
     updateProject,
     deleteProject,
+    activateProject,
     isLoading,
     error
   };
