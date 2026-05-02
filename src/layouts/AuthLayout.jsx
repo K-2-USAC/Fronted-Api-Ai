@@ -7,7 +7,7 @@ const AuthLayout = () => {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-accent/20 blur-[150px] rounded-full pointer-events-none" />
       
       <Link to="/" className="absolute top-8 left-8 text-2xl font-bold tracking-tighter z-50">
-        Nexus<span className="text-accent">AI</span>
+        Vox<span className="text-accent">2k</span>
       </Link>
 
       <div className="w-full flex items-center justify-center p-6 relative z-10">

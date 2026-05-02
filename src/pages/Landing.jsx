@@ -51,7 +51,7 @@ const Landing = () => {
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8 text-sm text-accent"
         >
           <Sparkles size={16} />
-          <span>Presentando Vox2K: El Call Center del Futuro</span>
+          <span>Presentando Vox2k: El Call Center del Futuro</span>
         </motion.div>
 
         <motion.h1
@@ -60,7 +60,7 @@ const Landing = () => {
         >
           Conversaciones <span className="text-white/40 block md:inline">inteligentes</span>
           <br />a la velocidad de <span className="text-accent relative inline-block">
-            2K
+            2k
             <span className="absolute -inset-1 bg-accent/20 blur-xl rounded-full -z-10 animate-pulse" />
           </span>.
         </motion.h1>
@@ -69,7 +69,7 @@ const Landing = () => {
           variants={itemVariants}
           className="text-lg md:text-xl text-white/60 mb-10 max-w-2xl mx-auto leading-relaxed"
         >
-          Transformamos la atención al cliente. Vox2K utiliza modelos avanzados
+          Transformamos la atención al cliente. Vox2k utiliza modelos avanzados
           de IA para ofrecer respuestas precisas, humanas y eficientes en cada
           llamada.
         </motion.p>

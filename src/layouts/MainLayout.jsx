@@ -11,7 +11,7 @@ const MainLayout = () => {
       <header className="sticky top-0 z-50 glass border-b-0 border-white/5">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <Link to="/" className="text-2xl font-bold tracking-tighter">
-            Vox<span className="text-accent">2K</span>
+            Vox<span className="text-accent">2k</span>
           </Link>
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
             <a
@@ -61,8 +61,8 @@ const MainLayout = () => {
 
       <footer className="border-t border-white/10 py-12 text-center text-sm text-white/50">
         <p>
-          © {new Date().getFullYear()} Vox2K Intelligence. Todos los derechos
-          reservados por Grupo 2K.
+          © {new Date().getFullYear()} Vox2k Intelligence. Todos los derechos
+          reservados por Grupo 2k.
         </p>
       </footer>
     </div>

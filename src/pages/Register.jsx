@@ -35,7 +35,7 @@ const Register = () => {
       
       <div className="mb-10">
         <h1 className="text-3xl font-bold tracking-tight mb-2">Create an account</h1>
-        <p className="text-white/50">Start building your next big idea</p>
+        <p className="text-white/50">El futuro de los call centers con IA</p>
         {error && (
           <motion.div 
             initial={{ opacity: 0, y: -10 }}
