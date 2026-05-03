@@ -1,13 +1,13 @@
-import { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { useAuth } from '../hooks/useAuth';
-import { Eye, EyeOff } from 'lucide-react';
-import { GoogleLogin } from '@react-oauth/google';
+import { useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
+import { useAuth } from "../hooks/useAuth";
+import { Eye, EyeOff } from "lucide-react";
+import { GoogleLogin } from "@react-oauth/google";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const { login, loginWithGoogle, isLoading, error } = useAuth();
   const navigate = useNavigate();
@@ -18,9 +18,9 @@ const Login = () => {
     e.preventDefault();
     try {
       await login({ email, password });
-      navigate('/dashboard');
+      navigate("/dashboard");
     } catch (err) {
-      console.error('Login failed:', err);
+      console.error("Login failed:", err);
     }
   };
 
@@ -28,26 +28,26 @@ const Login = () => {
     try {
       if (credentialResponse.credential) {
         await loginWithGoogle(credentialResponse.credential);
-        navigate('/dashboard');
+        navigate("/dashboard");
       }
     } catch (err) {
-      console.error('Google login failed:', err);
+      console.error("Google login failed:", err);
     }
   };
 
   const handleGoogleError = () => {
-    console.error('Google Login Failed');
+    console.error("Google Login Failed");
   };
 
   return (
     <div className="glass p-8 md:p-12 rounded-3xl w-full border border-white/10 shadow-2xl relative overflow-hidden">
       <div className="absolute top-0 right-0 w-32 h-32 bg-accent/30 blur-[80px] rounded-full pointer-events-none" />
-      
+
       <div className="mb-10">
         <h1 className="text-3xl font-bold tracking-tight mb-2">Welcome back</h1>
         <p className="text-white/50">Sign in to your account to continue</p>
         {error && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             className="mt-4 p-3 bg-red-500/10 border border-red-500/20 text-red-400 text-sm rounded-xl"
@@ -56,7 +56,7 @@ const Login = () => {
           </motion.div>
         )}
         {successMessage && !error && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             className="mt-4 p-3 bg-green-500/10 border border-green-500/20 text-green-400 text-sm rounded-xl"
@@ -66,9 +66,14 @@ const Login = () => {
         )}
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5 relative z-10">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-5 relative z-10"
+      >
         <div>
-          <label className="block text-sm font-medium text-white/70 mb-2">Email</label>
+          <label className="block text-sm font-medium text-white/70 mb-2">
+            Email
+          </label>
           <input
             type="email"
             value={email}
@@ -78,11 +83,19 @@ const Login = () => {
             required
           />
         </div>
-        
+
         <div>
           <div className="flex justify-between items-center mb-2">
-            <label className="block text-sm font-medium text-white/70">Password</label>
-            <Link to="/forgot-password" title="Click here to reset your password" className="text-xs text-accent hover:underline">Forgot?</Link>
+            <label className="block text-sm font-medium text-white/70">
+              Password
+            </label>
+            <Link
+              to="/forgot-password"
+              title="Click here to reset your password"
+              className="text-xs text-accent hover:underline"
+            >
+              Forgot?
+            </Link>
           </div>
           <div className="relative group">
             <input
@@ -103,8 +116,8 @@ const Login = () => {
           </div>
         </div>
 
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           disabled={isLoading}
           className="btn-primary w-full mt-4 h-12 flex items-center justify-center relative overflow-hidden"
         >
@@ -121,7 +134,9 @@ const Login = () => {
 
         <div className="relative flex items-center py-4">
           <div className="flex-grow border-t border-white/10"></div>
-          <span className="flex-shrink-0 mx-4 text-white/30 text-xs">OR CONTINUE WITH</span>
+          <span className="flex-shrink-0 mx-4 text-white/30 text-xs">
+            OR CONTINUE WITH
+          </span>
           <div className="flex-grow border-t border-white/10"></div>
         </div>
 
@@ -138,7 +153,13 @@ const Login = () => {
         </div>
 
         <p className="text-center text-sm text-white/50 mt-4">
-          Don't have an account? <Link to="/register" className="text-white hover:text-accent transition-colors">Sign up</Link>
+          Don't have an account?{" "}
+          <Link
+            to="/register"
+            className="text-white hover:text-accent transition-colors"
+          >
+            Sign up
+          </Link>
         </p>
       </form>
     </div>

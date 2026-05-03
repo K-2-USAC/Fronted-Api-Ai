@@ -33,7 +33,7 @@ const DashboardLayout = () => {
       {/* Sidebar */}
       <motion.aside
         animate={{ width: isSidebarOpen ? 240 : 80 }}
-        className={`fixed md:relative z-50 h-screen glass border-r border-white/10 flex flex-col transition-all duration-300 ${!isSidebarOpen ? '-translate-x-full md:translate-x-0' : 'translate-x-0'}`}
+        className={`fixed md:relative z-50 h-screen glass border-r border-white/10 flex flex-col transition-transform duration-300 ${!isSidebarOpen ? '-translate-x-full md:translate-x-0' : 'translate-x-0'}`}
       >
         <div className="h-20 flex items-center px-6 border-b border-white/10 shrink-0 justify-between">
           {(isSidebarOpen || window.innerWidth < 768) && (
