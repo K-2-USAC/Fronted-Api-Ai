@@ -173,17 +173,17 @@ const CreateProjectWizard = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto w-full flex flex-col min-h-[70vh]">
-      <div className="mb-12">
-        <h1 className="text-3xl font-bold tracking-tight mb-6">
-          {isEn ? "Create New Project" : "Crear Nuevo Proyecto"}
+    <div className="max-w-4xl mx-auto w-full flex flex-col min-h-[70vh] px-2 md:px-0 pb-12">
+      <div className="mb-12 md:mb-16">
+        <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-8 md:mb-12 text-center md:text-left">
+          {isEn ? "Create New Project" : "Crear Proyecto"}
         </h1>
 
         {/* Progress Bar */}
-        <div className="relative flex justify-between">
-          <div className="absolute top-1/2 left-0 w-full h-1 bg-white/10 -translate-y-1/2 rounded-full z-0" />
+        <div className="relative flex justify-between px-2">
+          <div className="absolute top-5 left-0 w-full h-0.5 bg-white/10 rounded-full z-0" />
           <motion.div
-            className="absolute top-1/2 left-0 h-1 bg-accent -translate-y-1/2 rounded-full z-0"
+            className="absolute top-5 left-0 h-0.5 bg-accent rounded-full z-0"
             initial={{ width: 0 }}
             animate={{
               width: `${((currentStep - 1) / (steps.length - 1)) * 100}%`,
@@ -201,24 +201,24 @@ const CreateProjectWizard = () => {
                 className="relative z-10 flex flex-col items-center"
               >
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-300 ${
+                  className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 ${
                     isCompleted
-                      ? "bg-accent text-white"
+                      ? "bg-accent text-white scale-90"
                       : isCurrent
-                        ? "bg-white text-dark shadow-[0_0_15px_rgba(255,255,255,0.5)]"
+                        ? "bg-white text-dark shadow-[0_0_20px_rgba(255,255,255,0.3)] scale-110"
                         : "bg-dark border border-white/20 text-white/40"
                   }`}
                 >
                   {isCompleted ? (
-                    <CheckCircle2 size={20} />
+                    <CheckCircle2 size={18} />
                   ) : (
-                    <step.icon size={18} />
+                    <step.icon size={16} />
                   )}
                 </div>
                 <span
-                  className={`absolute -bottom-8 text-xs font-medium whitespace-nowrap transition-colors duration-300 ${
-                    isCurrent ? "text-white" : "text-white/40"
-                  }`}
+                  className={`absolute -bottom-7 md:-bottom-8 text-[10px] md:text-xs font-bold whitespace-nowrap transition-colors duration-300 uppercase tracking-widest ${
+                    isCurrent ? "text-white" : "text-white/20"
+                  } ${isCurrent ? 'block' : 'hidden md:block'}`}
                 >
                   {isEn ? step.title : step.titleEs}
                 </span>
@@ -228,7 +228,7 @@ const CreateProjectWizard = () => {
         </div>
       </div>
 
-      <div className="flex-1 relative glass rounded-3xl p-8 md:p-12 overflow-hidden border border-white/10 shadow-2xl">
+      <div className="flex-1 relative glass rounded-2xl md:rounded-[2.5rem] p-6 md:p-12 overflow-hidden border border-white/10 shadow-2xl">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentStep}
@@ -239,122 +239,122 @@ const CreateProjectWizard = () => {
             className="h-full flex flex-col"
           >
             {error && (
-              <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+              <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs md:text-sm flex items-center gap-3">
+                <AlertCircle size={16} />
                 {error}
               </div>
             )}
 
             {currentStep === 1 && (
               <div className="space-y-6 flex-1">
-                <div>
-                  <h2 className="text-2xl font-semibold mb-2">
-                    {isEn ? "Let's start with the basics" : "Empecemos con lo básico"}
+                <div className="text-center md:text-left">
+                  <h2 className="text-xl md:text-2xl font-bold mb-2">
+                    {isEn ? "The basics" : "Lo básico"}
                   </h2>
-                  <p className="text-white/50 mb-8">
-                    {isEn ? "What are we building today?" : "¿Qué estamos construyendo hoy?"}
+                  <p className="text-white/50 text-sm md:text-base mb-8">
+                    {isEn ? "Tell us what you're building." : "Cuéntanos qué estás construyendo."}
                   </p>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-white/70 mb-2">
-                    {isEn ? "Project Name" : "Nombre del Proyecto"}
-                  </label>
-                  <input
-                    type="text"
-                    value={wizardData.name}
-                    onChange={(e) => setWizardData({ name: e.target.value })}
-                    className="input-field text-lg"
-                    placeholder={isEn ? "e.g. My Awesome Project" : "ej. Mi Proyecto Increíble"}
-                    autoFocus
-                  />
-                </div>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-xs md:text-sm font-medium text-white/70 mb-2">
+                      {isEn ? "Project Name" : "Nombre del Proyecto"}
+                    </label>
+                    <input
+                      type="text"
+                      value={wizardData.name}
+                      onChange={(e) => setWizardData({ name: e.target.value })}
+                      className="input-field py-3 text-base"
+                      placeholder={isEn ? "e.g. My Project" : "ej. Mi Proyecto"}
+                      autoFocus
+                    />
+                  </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-white/70 mb-2">
-                    {isEn ? "Business Type" : "Tipo de Negocio"}
-                  </label>
-                  <select
-                    value={wizardData.type}
-                    onChange={(e) => setWizardData({ type: e.target.value })}
-                    className="input-field appearance-none bg-dark text-white cursor-pointer"
-                  >
-                    <option value="Restaurante" className="bg-dark text-white">
-                      {isEn ? "Restaurant" : "Restaurante"}
-                    </option>
-                    <option value="Hotel" className="bg-dark text-white">
-                      {isEn ? "Hotel" : "Hotel"}
-                    </option>
-                    <option value="Tienda" className="bg-dark text-white">
-                      {isEn ? "Store" : "Tienda"}
-                    </option>
-                    <option value="Otro" className="bg-dark text-white">
-                      {isEn ? "Other" : "Otro"}
-                    </option>
-                  </select>
+                  <div>
+                    <label className="block text-xs md:text-sm font-medium text-white/70 mb-2">
+                      {isEn ? "Business Type" : "Tipo de Negocio"}
+                    </label>
+                    <div className="relative">
+                      <select
+                        value={wizardData.type}
+                        onChange={(e) => setWizardData({ type: e.target.value })}
+                        className="input-field py-3 appearance-none bg-dark text-white cursor-pointer pr-10"
+                      >
+                        <option value="Restaurante">{isEn ? "Restaurant" : "Restaurante"}</option>
+                        <option value="Hotel">{isEn ? "Hotel" : "Hotel"}</option>
+                        <option value="Tienda">{isEn ? "Store" : "Tienda"}</option>
+                        <option value="Otro">{isEn ? "Other" : "Otro"}</option>
+                      </select>
+                      <ArrowRight size={16} className="absolute right-4 top-1/2 -translate-y-1/2 rotate-90 text-white/30 pointer-events-none" />
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
 
             {currentStep === 2 && (
               <div className="space-y-6 flex-1">
-                <div>
-                  <h2 className="text-2xl font-semibold mb-2">
-                    {isEn ? "Tell us more" : "Cuéntanos más"}
+                <div className="text-center md:text-left">
+                  <h2 className="text-xl md:text-2xl font-bold mb-2">
+                    {isEn ? "Project details" : "Detalles"}
                   </h2>
-                  <p className="text-white/50 mb-8">
-                    {isEn ? "This helps our AI understand your goals." : "Esto ayuda a nuestra IA a entender tus objetivos."}
+                  <p className="text-white/50 text-sm md:text-base mb-8">
+                    {isEn ? "Give us a clear description." : "Danos una descripción clara."}
                   </p>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-white/70 mb-2">
-                    {isEn ? "Description" : "Descripción"}
-                  </label>
-                  <textarea
-                    value={wizardData.description}
-                    onChange={(e) =>
-                      setWizardData({ description: e.target.value })
-                    }
-                    className="input-field min-h-[120px] resize-none"
-                    placeholder={isEn 
-                      ? "Describe what your business does and what you want to achieve..." 
-                      : "Describe qué hace tu negocio y qué deseas lograr..."}
-                  />
-                </div>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-xs md:text-sm font-medium text-white/70 mb-2">
+                      {isEn ? "Description" : "Descripción"}
+                    </label>
+                    <textarea
+                      value={wizardData.description}
+                      onChange={(e) =>
+                        setWizardData({ description: e.target.value })
+                      }
+                      className="input-field min-h-[150px] md:min-h-[120px] resize-none py-3"
+                      placeholder={isEn 
+                        ? "Describe your business goals..." 
+                        : "Describe los objetivos de tu negocio..."}
+                    />
+                  </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-white/70 mb-2">
-                    {isEn ? "Target Audience (Optional)" : "Público Objetivo (Opcional)"}
-                  </label>
-                  <input
-                    type="text"
-                    value={wizardData.targetAudience}
-                    onChange={(e) =>
-                      setWizardData({ targetAudience: e.target.value })
-                    }
-                    className="input-field"
-                    placeholder={isEn ? "e.g. Young professionals..." : "ej. Jóvenes profesionales..."}
-                  />
+                  <div>
+                    <label className="block text-xs md:text-sm font-medium text-white/70 mb-2">
+                      {isEn ? "Target Audience (Optional)" : "Público Objetivo"}
+                    </label>
+                    <input
+                      type="text"
+                      value={wizardData.targetAudience}
+                      onChange={(e) =>
+                        setWizardData({ targetAudience: e.target.value })
+                      }
+                      className="input-field py-3"
+                      placeholder={isEn ? "e.g. Students, Professionals" : "ej. Estudiantes, Profesionales"}
+                    />
+                  </div>
                 </div>
               </div>
             )}
 
             {currentStep === 3 && (
               <div className="space-y-6 flex-1">
-                <div>
-                  <h2 className="text-2xl font-semibold mb-2">
-                    {isEn ? "Look & Feel" : "Apariencia y Estilo"}
+                <div className="text-center md:text-left">
+                  <h2 className="text-xl md:text-2xl font-bold mb-2">
+                    {isEn ? "Look & feel" : "Estilo"}
                   </h2>
-                  <p className="text-white/50 mb-8">
-                    {isEn ? "Choose the vibe of your application." : "Elige el estilo de tu aplicación."}
+                  <p className="text-white/50 text-sm md:text-base mb-8">
+                    {isEn ? "Define the personality." : "Define la personalidad."}
                   </p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-white/70 mb-4">
+                  <label className="block text-xs md:text-sm font-medium text-white/70 mb-4">
                     {isEn ? "Voice Tone" : "Tono de Voz"}
                   </label>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {[
                       "Formal",
                       "Amigable",
@@ -365,17 +365,17 @@ const CreateProjectWizard = () => {
                       <div
                         key={tone}
                         onClick={() => setWizardData({ voiceTone: tone })}
-                        className={`p-4 rounded-xl cursor-pointer border transition-all duration-300 ${
+                        className={`p-3 md:p-4 rounded-xl cursor-pointer border transition-all duration-300 text-center ${
                           wizardData.voiceTone === tone
-                            ? "bg-accent/20 border-accent shadow-[0_0_15px_rgba(99,102,241,0.2)]"
-                            : "bg-white/5 border-white/10 hover:border-white/30"
+                            ? "bg-accent/20 border-accent text-white"
+                            : "bg-white/5 border-white/10 text-white/40"
                         }`}
                       >
-                        <span className="font-medium text-sm">
+                        <span className="font-bold text-[11px] md:text-sm uppercase tracking-wider">
                           {isEn ? (
                             tone === "Formal" ? "Formal" :
                             tone === "Amigable" ? "Friendly" :
-                            tone === "Profesional" ? "Professional" :
+                            tone === "Profesional" ? "Pro" :
                             tone === "Casual" ? "Casual" :
                             tone === "Persuasivo" ? "Persuasive" : tone
                           ) : tone}
@@ -386,47 +386,42 @@ const CreateProjectWizard = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-white/70 mb-2 mt-4">
-                    {isEn ? "Agent Language" : "Idioma del Agente"}
+                  <label className="block text-xs md:text-sm font-medium text-white/70 mb-2 mt-4">
+                    {isEn ? "Agent Language" : "Idioma"}
                   </label>
-                  <select
-                    value={wizardData.language}
-                    onChange={(e) =>
-                      setWizardData({ language: e.target.value })
-                    }
-                    className="input-field appearance-none bg-dark text-white cursor-pointer"
-                  >
-                    <option value="es-GT" className="bg-dark text-white">
-                      {isEn ? "Spanish (Guatemala)" : "Español (Guatemala)"}
-                    </option>
-                    <option value="es-ES" className="bg-dark text-white">
-                      {isEn ? "Spanish (Spain)" : "Español (España)"}
-                    </option>
-                    <option value="en-US" className="bg-dark text-white">
-                      {isEn ? "English (US)" : "Inglés (US)"}
-                    </option>
-                    <option value="en-GB" className="bg-dark text-white">
-                      {isEn ? "English (UK)" : "Inglés (UK)"}
-                    </option>
-                  </select>
+                  <div className="relative">
+                    <select
+                      value={wizardData.language}
+                      onChange={(e) =>
+                        setWizardData({ language: e.target.value })
+                      }
+                      className="input-field py-3 appearance-none bg-dark pr-10"
+                    >
+                      <option value="es-GT">Español (GT)</option>
+                      <option value="es-ES">Español (ES)</option>
+                      <option value="en-US">English (US)</option>
+                      <option value="en-GB">English (UK)</option>
+                    </select>
+                    <ArrowRight size={16} className="absolute right-4 top-1/2 -translate-y-1/2 rotate-90 text-white/30 pointer-events-none" />
+                  </div>
                 </div>
               </div>
             )}
 
             {currentStep === 4 && (
               <div className="space-y-6 flex-1">
-                <div>
-                  <h2 className="text-2xl font-semibold mb-2">
-                    {isEn ? "Final details" : "Detalles finales"}
+                <div className="text-center md:text-left">
+                  <h2 className="text-xl md:text-2xl font-bold mb-2">
+                    {isEn ? "Final touch" : "Toque final"}
                   </h2>
-                  <p className="text-white/50 mb-8">
-                    {isEn ? "Add any extra information." : "Agrega cualquier información extra."}
+                  <p className="text-white/50 text-sm md:text-base mb-8">
+                    {isEn ? "Complete the setup." : "Completa la configuración."}
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-white/70 mb-2">
+                    <label className="block text-xs md:text-sm font-medium text-white/70 mb-2">
                       {isEn ? "Agent Name" : "Nombre del Agente"}
                     </label>
                     <input
@@ -435,13 +430,13 @@ const CreateProjectWizard = () => {
                       onChange={(e) =>
                         setWizardData({ agentId: e.target.value })
                       }
-                      className="input-field"
+                      className="input-field py-3"
                       placeholder={isEn ? "ej. AI Assistant" : "ej. Asistente IA"}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-white/70 mb-2">
-                      {isEn ? "Business Hours" : "Horarios de Atención"}
+                    <label className="block text-xs md:text-sm font-medium text-white/70 mb-2">
+                      {isEn ? "Hours" : "Horarios"}
                     </label>
                     <input
                       type="text"
@@ -449,29 +444,29 @@ const CreateProjectWizard = () => {
                       onChange={(e) =>
                         setWizardData({ businessHours: e.target.value })
                       }
-                      className="input-field"
-                      placeholder={isEn ? "e.g. Mon-Fri, 9am - 6pm" : "ej. Lun-Vie, 9am - 6pm"}
+                      className="input-field py-3"
+                      placeholder="9am - 6pm"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-white/70 mb-4 flex justify-between items-center">
-                    <span>{isEn ? "Frequently Asked Questions (FAQs)" : "Preguntas Frecuentes (FAQs)"}</span>
+                  <label className="block text-xs md:text-sm font-medium text-white/70 mb-4 flex justify-between items-center">
+                    <span>{isEn ? "FAQs" : "Preguntas (FAQs)"}</span>
                     <button
                       type="button"
                       onClick={addFaq}
-                      className="text-accent hover:text-white flex items-center gap-1 text-xs transition-colors"
+                      className="text-accent text-xs font-bold flex items-center gap-1"
                     >
-                      <Plus size={14} /> {isEn ? "Add FAQ" : "Agregar FAQ"}
+                      <Plus size={14} /> {isEn ? "Add" : "Añadir"}
                     </button>
                   </label>
 
-                  <div className="space-y-4 max-h-[180px] overflow-y-auto pr-2 custom-scrollbar">
+                  <div className="space-y-3 max-h-[150px] md:max-h-[180px] overflow-y-auto pr-2 custom-scrollbar">
                     {wizardData.faqs.map((faq, i) => (
                       <div
                         key={i}
-                        className="flex gap-2 items-start bg-white/5 p-3 rounded-xl border border-white/10"
+                        className="flex gap-2 items-start bg-white/5 p-3 rounded-xl border border-white/5"
                       >
                         <div className="flex-1 space-y-2">
                           <input
@@ -480,7 +475,7 @@ const CreateProjectWizard = () => {
                             onChange={(e) =>
                               updateFaq(i, "question", e.target.value)
                             }
-                            className="bg-transparent border-none p-0 text-sm w-full focus:ring-0 placeholder:text-white/20"
+                            className="bg-transparent border-none p-0 text-sm w-full focus:ring-0 placeholder:text-white/20 font-medium"
                             placeholder={isEn ? "Question" : "Pregunta"}
                           />
                           <input
@@ -489,14 +484,14 @@ const CreateProjectWizard = () => {
                             onChange={(e) =>
                               updateFaq(i, "answer", e.target.value)
                             }
-                            className="bg-transparent border-none p-0 text-xs w-full focus:ring-0 text-white/50 placeholder:text-white/10"
+                            className="bg-transparent border-none p-0 text-xs w-full focus:ring-0 text-white/40 placeholder:text-white/10"
                             placeholder={isEn ? "Answer" : "Respuesta"}
                           />
                         </div>
                         <button
                           type="button"
                           onClick={() => removeFaq(i)}
-                          className="p-1 text-white/30 hover:text-red-400 transition-colors"
+                          className="p-1 text-white/20 hover:text-red-400"
                         >
                           <Trash2 size={14} />
                         </button>
@@ -509,27 +504,28 @@ const CreateProjectWizard = () => {
           </motion.div>
         </AnimatePresence>
 
-        <div className="mt-12 pt-6 border-t border-white/10 flex justify-between items-center">
+        <div className="mt-8 md:mt-12 pt-6 border-t border-white/10 flex justify-between items-center">
           <button
             onClick={handleBack}
-            className={`btn-secondary flex items-center gap-2 ${currentStep === 1 ? "opacity-0 pointer-events-none" : ""}`}
+            className={`btn-secondary flex items-center gap-2 py-2.5 text-sm ${currentStep === 1 ? "opacity-0 pointer-events-none" : ""}`}
           >
-            <ArrowLeft size={18} /> {isEn ? "Back" : "Atrás"}
+            <ArrowLeft size={16} /> {isEn ? "Back" : "Atrás"}
           </button>
 
           {currentStep < steps.length ? (
             <button
               onClick={handleNext}
-              className="btn-primary flex items-center gap-2"
+              className="btn-primary flex items-center gap-2 py-2.5 text-sm"
             >
-              {isEn ? "Continue" : "Continuar"} <ArrowRight size={18} />
+              {isEn ? "Next" : "Siguiente"} <ArrowRight size={16} />
             </button>
           ) : (
             <button
               onClick={handleGenerate}
-              className="bg-accent text-white px-6 py-3 rounded-full font-medium hover:bg-accent/90 active:scale-95 transition-all duration-300 shadow-[0_0_20px_rgba(99,102,241,0.4)] flex items-center gap-2"
+              disabled={isGenerating}
+              className="bg-accent text-white px-6 py-2.5 rounded-full font-bold hover:bg-accent/90 active:scale-95 transition-all text-sm shadow-[0_0_20px_rgba(99,102,241,0.3)] flex items-center gap-2 disabled:opacity-50"
             >
-              {isEn ? "Generate Project" : "Generar Proyecto"} <CheckCircle2 size={18} />
+              {isEn ? "Create" : "Crear"} <CheckCircle2 size={16} />
             </button>
           )}
         </div>

@@ -136,14 +136,14 @@ const Profile = () => {
   }
 
   return (
-    <div className="max-w-3xl mx-auto flex flex-col gap-8 w-full pb-12">
+    <div className="max-w-3xl mx-auto flex flex-col gap-8 w-full pb-12 px-2 md:px-0">
       <header className="relative pb-6 border-b border-white/5">
         <div className="absolute -left-10 -top-10 w-40 h-40 bg-accent/20 blur-[80px] rounded-full pointer-events-none" />
         <div className="relative z-10">
-          <h1 className="text-4xl font-extrabold tracking-tight mb-2 bg-clip-text text-transparent bg-gradient-to-r from-white via-white/90 to-white/60">
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-2 bg-clip-text text-transparent bg-gradient-to-r from-white via-white/90 to-white/60">
             {isEn ? "Profile" : "Perfil"}
           </h1>
-          <p className="text-white/50 text-sm md:text-base">
+          <p className="text-white/50 text-xs md:text-base">
             {isEn 
               ? "Manage your personal information and account preferences." 
               : "Gestiona tu información personal y preferencias de cuenta."}
@@ -176,55 +176,55 @@ const Profile = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="glass rounded-[2rem] overflow-hidden border border-white/10 relative"
+        className="glass rounded-[1.5rem] md:rounded-[2rem] overflow-hidden border border-white/10 relative"
       >
         <div className="absolute top-0 right-0 w-96 h-96 bg-accent/10 blur-[100px] pointer-events-none" />
         
-        <div className="h-40 bg-gradient-to-r from-accent/30 via-purple-500/20 to-accent/10 relative overflow-hidden">
+        <div className="h-32 md:h-40 bg-gradient-to-r from-accent/30 via-purple-500/20 to-accent/10 relative overflow-hidden">
           <div className="absolute inset-0 bg-white/5 backdrop-blur-[2px]" />
-          <div className="absolute -bottom-16 left-8 z-10">
+          <div className="absolute -bottom-12 md:-bottom-16 left-1/2 md:left-8 -translate-x-1/2 md:translate-x-0 z-10">
             <div className="relative group">
-              <div className="w-32 h-32 rounded-3xl bg-dark border-4 border-dark flex items-center justify-center overflow-hidden shadow-2xl rotate-3 group-hover:rotate-0 transition-transform duration-500">
-                <div className="w-full h-full bg-gradient-to-br from-accent to-purple-500 flex items-center justify-center text-5xl font-bold text-white shadow-[0_0_30px_rgba(99,102,241,0.6)]">
+              <div className="w-24 h-24 md:w-32 md:h-32 rounded-2xl md:rounded-3xl bg-dark border-4 border-dark flex items-center justify-center overflow-hidden shadow-2xl rotate-3 group-hover:rotate-0 transition-transform duration-500">
+                <div className="w-full h-full bg-gradient-to-br from-accent to-purple-500 flex items-center justify-center text-3xl md:text-5xl font-bold text-white shadow-[0_0_30px_rgba(99,102,241,0.6)]">
                   {formData.name.charAt(0).toUpperCase()}
                 </div>
               </div>
-              <button className="absolute inset-0 bg-black/60 rounded-3xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <Camera size={32} className="text-white drop-shadow-lg" />
+              <button className="absolute inset-0 bg-black/60 rounded-2xl md:rounded-3xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <Camera size={24} className="md:size-8 text-white drop-shadow-lg" />
               </button>
             </div>
           </div>
         </div>
 
-        <div className="p-8 pt-16">
-          <div className="flex justify-between items-start mb-8">
+        <div className="p-6 md:p-8 pt-16 md:pt-20">
+          <div className="flex flex-col md:flex-row justify-between items-center md:items-start mb-8 text-center md:text-left gap-6">
             <div>
-              <h2 className="text-2xl font-bold">
+              <h2 className="text-xl md:text-2xl font-bold">
                 {formData.name} {formData.surname}
               </h2>
-              <p className="text-white/50">{formData.email}</p>
+              <p className="text-white/50 text-sm">{formData.email}</p>
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-3 w-full md:w-auto">
               {isEditing ? (
                 <>
-                  <button onClick={handleCancel} className="btn-secondary">
+                  <button onClick={handleCancel} className="btn-secondary flex-1 md:flex-none py-2 text-sm">
                     {isEn ? "Cancel" : "Cancelar"}
                   </button>
                   <button
                     onClick={handleSave}
                     disabled={isLoading}
-                    className="btn-primary flex items-center gap-2"
+                    className="btn-primary flex-1 md:flex-none flex items-center justify-center gap-2 py-2 text-sm"
                   >
                     {isLoading && (
                       <Loader2 size={16} className="animate-spin" />
                     )}
-                    {isEn ? "Save Changes" : "Guardar Cambios"}
+                    {isEn ? "Save" : "Guardar"}
                   </button>
                 </>
               ) : (
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="btn-secondary"
+                  className="btn-secondary w-full md:w-auto py-2 text-sm"
                 >
                   {isEn ? "Edit Profile" : "Editar Perfil"}
                 </button>
@@ -233,10 +233,10 @@ const Profile = () => {
           </div>
 
           <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-white/70 flex items-center gap-2">
-                  <User size={16} /> {isEn ? "First Name" : "Nombre"}
+                <label className="text-xs md:text-sm font-medium text-white/70 flex items-center gap-2">
+                  <User size={14} /> {isEn ? "First Name" : "Nombre"}
                 </label>
                 {isEditing ? (
                   <input
@@ -245,19 +245,19 @@ const Profile = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, name: e.target.value })
                     }
-                    className="input-field"
+                    className="input-field py-2"
                     placeholder={isEn ? "Your name" : "Tu nombre"}
                   />
                 ) : (
-                  <div className="h-12 flex items-center px-4 bg-white/5 border border-white/5 rounded-xl text-white/90">
+                  <div className="h-11 md:h-12 flex items-center px-4 bg-white/5 border border-white/5 rounded-xl text-white/90 text-sm">
                     {formData.name}
                   </div>
                 )}
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-white/70 flex items-center gap-2">
-                  <User size={16} /> {isEn ? "Surname" : "Apellido"}
+                <label className="text-xs md:text-sm font-medium text-white/70 flex items-center gap-2">
+                  <User size={14} /> {isEn ? "Surname" : "Apellido"}
                 </label>
                 {isEditing ? (
                   <input
@@ -266,11 +266,11 @@ const Profile = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, surname: e.target.value })
                     }
-                    className="input-field"
+                    className="input-field py-2"
                     placeholder={isEn ? "Your surname" : "Tu apellido"}
                   />
                 ) : (
-                  <div className="h-12 flex items-center px-4 bg-white/5 border border-white/5 rounded-xl text-white/90">
+                  <div className="h-11 md:h-12 flex items-center px-4 bg-white/5 border border-white/5 rounded-xl text-white/90 text-sm">
                     {formData.surname || (
                       <span className="text-white/20 italic">Not set</span>
                     )}
@@ -279,20 +279,17 @@ const Profile = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-white/70 flex items-center gap-2">
-                  <Mail size={16} /> {isEn ? "Email Address" : "Correo Electrónico"}
+                <label className="text-xs md:text-sm font-medium text-white/70 flex items-center gap-2">
+                  <Mail size={14} /> {isEn ? "Email" : "Correo"}
                 </label>
-                <div className="h-12 flex items-center px-4 bg-white/5 border border-white/5 rounded-xl text-white/40 cursor-not-allowed">
+                <div className="h-11 md:h-12 flex items-center px-4 bg-white/5 border border-white/5 rounded-xl text-white/40 cursor-not-allowed text-sm">
                   {formData.email}
                 </div>
-                <p className="text-[10px] text-white/30 italic">
-                  {isEn ? "Email cannot be changed" : "El correo no se puede cambiar"}
-                </p>
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-white/70 flex items-center gap-2">
-                  <Phone size={16} /> {isEn ? "Phone Number" : "Número de Teléfono"}
+                <label className="text-xs md:text-sm font-medium text-white/70 flex items-center gap-2">
+                  <Phone size={14} /> {isEn ? "Phone Number" : "Teléfono"}
                 </label>
                 {isEditing ? (
                   <input
@@ -301,11 +298,11 @@ const Profile = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, phone: e.target.value })
                     }
-                    className="input-field"
-                    placeholder={isEn ? "Your phone number" : "Tu número de teléfono"}
+                    className="input-field py-2"
+                    placeholder={isEn ? "Your phone" : "Tu teléfono"}
                   />
                 ) : (
-                  <div className="h-12 flex items-center px-4 bg-white/5 border border-white/5 rounded-xl text-white/90">
+                  <div className="h-11 md:h-12 flex items-center px-4 bg-white/5 border border-white/5 rounded-xl text-white/90 text-sm">
                     {formData.phone || (
                       <span className="text-white/20 italic">Not set</span>
                     )}
@@ -315,27 +312,27 @@ const Profile = () => {
             </div>
 
             <div className="pt-6 border-t border-white/10 space-y-6">
-              <h3 className="text-lg font-medium mb-4 flex items-center gap-2">
-                <Shield size={20} className="text-accent" /> {isEn ? "Security & Account" : "Seguridad & Cuenta"}
+              <h3 className="text-lg font-medium flex items-center gap-2">
+                <Shield size={18} className="text-accent" /> {isEn ? "Security" : "Seguridad"}
               </h3>
 
               {/* UID Section */}
-              <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
-                <div className="flex items-center justify-between mb-2">
-                  <label className="text-xs font-bold text-white/30 uppercase tracking-widest flex items-center gap-2">
-                    <Fingerprint size={14} /> {isEn ? "Your Unique ID (UID)" : "Tu ID Único (UID)"}
+              <div className="p-4 md:p-5 rounded-2xl bg-white/5 border border-white/10">
+                <div className="flex items-center justify-between mb-3">
+                  <label className="text-[10px] font-bold text-white/30 uppercase tracking-widest flex items-center gap-2">
+                    <Fingerprint size={14} /> {isEn ? "Your UID" : "Tu UID"}
                   </label>
                   <button
                     onClick={() => setShowUid(!showUid)}
                     className="text-xs text-accent hover:text-white transition-colors flex items-center gap-1"
                   >
                     {showUid ? <EyeOff size={14} /> : <Eye size={14} />}
-                    {showUid ? (isEn ? "Hide" : "Ocultar") : (isEn ? "Show ID" : "Mostrar ID")}
+                    {showUid ? (isEn ? "Hide" : "Ocultar") : (isEn ? "Show" : "Mostrar")}
                   </button>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   <code
-                    className={`flex-1 p-3 rounded-lg bg-dark/50 border border-white/5 text-sm font-mono transition-all ${showUid ? "text-white" : "text-white/5 blur-sm select-none"}`}
+                    className={`flex-1 p-2.5 rounded-lg bg-dark/50 border border-white/5 text-[11px] md:text-sm font-mono transition-all overflow-hidden ${showUid ? "text-white" : "text-white/5 blur-sm select-none"}`}
                   >
                     {showUid
                       ? user?.uid || user?.id
@@ -344,20 +341,14 @@ const Profile = () => {
                   <button
                     onClick={handleCopyUid}
                     disabled={!showUid}
-                    className={`p-3 rounded-lg transition-all ${copied ? "bg-emerald-500/20 text-emerald-400" : "bg-white/5 text-white/40 hover:text-white hover:bg-white/10 disabled:opacity-30"}`}
-                    title={isEn ? "Copy UID" : "Copiar UID"}
+                    className={`p-2.5 rounded-lg transition-all ${copied ? "bg-emerald-500/20 text-emerald-400" : "bg-white/5 text-white/40 hover:text-white hover:bg-white/10 disabled:opacity-30"}`}
                   >
-                    {copied ? <Check size={18} /> : <Copy size={18} />}
+                    {copied ? <Check size={16} /> : <Copy size={16} />}
                   </button>
                 </div>
-                <p className="text-[10px] text-white/20 mt-3 italic">
-                  {isEn 
-                    ? "Use this ID to recover your password if you lose access to your account." 
-                    : "Utiliza este ID para recuperar tu contraseña si pierdes el acceso a tu cuenta."}
-                </p>
               </div>
 
-              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-4">
+              <div className="p-4 md:p-5 rounded-2xl bg-white/5 border border-white/10 space-y-4">
                 <h4 className="text-sm font-medium flex items-center gap-2">
                   <Key size={16} className="text-white/50" />
                   {isEn ? "Change Password" : "Cambiar Contraseña"}
@@ -376,16 +367,16 @@ const Profile = () => {
                       placeholder={isEn ? "Current Password" : "Contraseña Actual"}
                       value={passwordData.oldPassword}
                       onChange={(e) => setPasswordData({...passwordData, oldPassword: e.target.value})}
-                      className="input-field text-sm h-10"
+                      className="input-field text-sm h-10 py-1"
                     />
                     <input
                       type="password"
-                      placeholder={isEn ? "New Password (min. 8 chars)" : "Nueva Contraseña (min. 8 caracteres)"}
+                      placeholder={isEn ? "New Password" : "Nueva Contraseña"}
                       value={passwordData.newPassword}
                       onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})}
-                      className="input-field text-sm h-10"
+                      className="input-field text-sm h-10 py-1"
                     />
-                    <div className="flex gap-2 pt-2">
+                    <div className="flex gap-2 pt-1">
                       <button onClick={handleChangePassword} className="btn-primary py-2 text-xs flex-1">
                         {isEn ? "Update" : "Actualizar"}
                       </button>
@@ -398,7 +389,7 @@ const Profile = () => {
                     </div>
                   </div>
                 ) : (
-                  <button onClick={() => setIsChangingPassword(true)} className="btn-secondary text-sm w-full md:w-auto">
+                  <button onClick={() => setIsChangingPassword(true)} className="btn-secondary text-sm w-full md:w-auto py-2">
                     {isEn ? "Change Password" : "Cambiar Contraseña"}
                   </button>
                 )}

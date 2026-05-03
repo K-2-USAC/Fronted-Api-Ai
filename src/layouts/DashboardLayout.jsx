@@ -8,7 +8,8 @@ import { useLanguage } from '../context/LanguageContext';
 const DashboardLayout = () => {
   const { lang, toggleLanguage } = useLanguage();
   const isEn = lang === 'en';
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  // Start with sidebar closed on mobile, open on desktop
+  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 768);
   const location = useLocation();
   const logout = useAuthStore(state => state.logout);
 
@@ -18,17 +19,23 @@ const DashboardLayout = () => {
     { name: 'Profile', path: '/profile', icon: User },
   ];
 
+  const closeSidebarOnMobile = () => {
+    if (window.innerWidth < 768) {
+      setIsSidebarOpen(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen flex bg-dark">
+    <div className="min-h-screen flex bg-dark overflow-hidden">
       {/* Mobile overlay */}
       <AnimatePresence>
-        {!isSidebarOpen && (
+        {isSidebarOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 z-40 md:hidden"
-            onClick={() => setIsSidebarOpen(true)}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
+            onClick={() => setIsSidebarOpen(false)}
           />
         )}
       </AnimatePresence>
@@ -42,15 +49,13 @@ const DashboardLayout = () => {
         }`}
       >
         <div className="h-20 flex items-center px-6 border-b border-white/10 shrink-0 justify-between overflow-hidden">
-          {(isSidebarOpen || window.innerWidth < 768) && (
-            <Link to="/dashboard" className="text-xl font-bold tracking-tighter shrink-0">
-              Vox<span className="text-accent">2k</span>
-            </Link>
-          )}
+          <Link to="/dashboard" onClick={closeSidebarOnMobile} className="text-xl font-bold tracking-tighter shrink-0">
+            Vox<span className="text-accent">2k</span>
+          </Link>
           <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="hidden md:block text-white/50 hover:text-white shrink-0 ml-auto">
-            <Menu size={20} />
+            {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
-          <button onClick={() => setIsSidebarOpen(false)} className="md:hidden text-white/50 hover:text-white shrink-0 ml-auto">
+          <button onClick={() => setIsSidebarOpen(false)} className="md:hidden text-white/50 hover:text-white shrink-0">
             <X size={20} />
           </button>
         </div>
@@ -62,6 +67,7 @@ const DashboardLayout = () => {
               <Link
                 key={item.path}
                 to={item.path}
+                onClick={closeSidebarOnMobile}
                 className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-300 ${
                   isActive ? 'bg-accent/20 text-accent font-medium' : 'text-white/60 hover:text-white hover:bg-white/5'
                 }`}
@@ -81,6 +87,7 @@ const DashboardLayout = () => {
         <div className="p-4 border-t border-white/10 shrink-0">
           <Link
             to="/projects/create"
+            onClick={closeSidebarOnMobile}
             className="w-full btn-primary py-3 flex items-center justify-center gap-2 mb-4 group"
             title={isEn ? "Create Project" : "Crear Proyecto"}
           >
@@ -116,16 +123,21 @@ const DashboardLayout = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto relative">
+      <main className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto relative custom-scrollbar">
         {/* Mobile Header */}
-        <div className="md:hidden h-20 glass border-b border-white/10 flex items-center px-6 sticky top-0 z-30 shrink-0">
-          <button onClick={() => setIsSidebarOpen(true)} className="text-white/50 hover:text-white">
-            <Menu size={24} />
-          </button>
-          <span className="ml-4 font-bold text-lg">Vox2k</span>
-        </div>
+        <header className="md:hidden h-20 glass border-b border-white/10 flex items-center justify-between px-6 sticky top-0 z-30 shrink-0">
+          <div className="flex items-center gap-4">
+            <button onClick={() => setIsSidebarOpen(true)} className="p-2 -ml-2 text-white/50 hover:text-white transition-colors">
+              <Menu size={24} />
+            </button>
+            <span className="font-bold text-lg tracking-tighter">Vox<span className="text-accent">2k</span></span>
+          </div>
+          <Link to="/profile" className="w-10 h-10 rounded-full bg-accent/20 border border-accent/30 flex items-center justify-center text-accent">
+            <User size={20} />
+          </Link>
+        </header>
 
-        <div className="flex-1 p-6 md:p-10 relative z-10 max-w-6xl mx-auto w-full">
+        <div className="flex-1 p-4 sm:p-6 md:p-10 relative z-10 max-w-6xl mx-auto w-full">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}

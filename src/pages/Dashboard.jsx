@@ -41,120 +41,103 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="flex flex-col gap-8">
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="flex flex-col gap-6 md:gap-8 pb-12 px-2 md:px-0">
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight mb-1">
-            {isEn ? `Welcome back, ${user?.name?.split(' ')[0]}` : `Bienvenido de nuevo, ${user?.name?.split(' ')[0]}`}
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-1 text-center md:text-left">
+            {isEn ? `Welcome back, ${user?.name?.split(' ')[0]}` : `Bienvenido, ${user?.name?.split(' ')[0]}`}
           </h1>
-          <p className="text-white/50">
-            {isEn ? "Here's an overview of your workspace." : "Aquí tienes un resumen de tu espacio de trabajo."}
+          <p className="text-white/50 text-sm md:text-base text-center md:text-left">
+            {isEn ? "Overview of your workspace." : "Resumen de tu espacio."}
           </p>
         </div>
-        <Link to="/projects/create" className="btn-primary flex items-center justify-center gap-2">
+        <Link to="/projects/create" className="btn-primary flex items-center justify-center gap-2 py-3 text-sm">
           <Plus size={18} /> {isEn ? "New Project" : "Nuevo Proyecto"}
         </Link>
       </header>
 
-      {/* Prototype Status Card - Premium Design */}
+      {/* Prototype Status Card */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="relative overflow-hidden rounded-3xl p-1"
+        className="relative overflow-hidden rounded-[2rem] p-px"
       >
         <div className="absolute inset-0 bg-gradient-to-r from-accent/20 via-purple-500/20 to-accent/20 blur-xl opacity-50 animate-pulse" />
-        <div className="glass p-6 md:p-8 rounded-[22px] border border-accent/20 bg-gradient-to-br from-accent/10 via-transparent to-transparent relative z-10 overflow-hidden group">
-          <div className="absolute -right-20 -top-20 w-64 h-64 bg-accent/20 blur-[80px] rounded-full group-hover:bg-accent/30 transition-colors duration-700" />
+        <div className="glass p-6 md:p-8 rounded-[2rem] border border-accent/20 bg-gradient-to-br from-accent/10 via-transparent to-transparent relative z-10 overflow-hidden group">
+          <div className="absolute -right-20 -top-20 w-64 h-64 bg-accent/20 blur-[80px] rounded-full" />
 
-          <div className="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8 relative z-10">
+          <div className="flex flex-col md:flex-row items-center md:items-center gap-6 relative z-10 text-center md:text-left">
             <div className="relative">
-              <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-accent/40 to-accent/10 flex items-center justify-center text-accent shadow-lg shadow-accent/20 border border-accent/20 backdrop-blur-md">
+              <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-accent/20 flex items-center justify-center text-accent border border-accent/20 backdrop-blur-md">
                 <Phone size={32} />
               </div>
-              <div className="absolute -bottom-2 -right-2 w-6 h-6 bg-emerald-500 rounded-full border-4 border-dark flex items-center justify-center animate-bounce">
-                <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
-              </div>
+              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full border-2 border-dark" />
             </div>
 
             <div className="flex-1">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-2">
-                <h3 className="text-xl md:text-2xl font-bold tracking-tight">
-                  {isEn ? "Prototype Active Number" : "Número Activo del Prototipo"}
+              <div className="flex flex-col md:flex-row items-center gap-2 mb-3">
+                <h3 className="text-xl font-bold">
+                  {isEn ? "Shared Number" : "Número Compartido"}
                 </h3>
-                <span className="w-fit px-3 py-1 rounded-full text-[10px] font-bold tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 uppercase shadow-[0_0_10px_rgba(16,185,129,0.2)]">
-                  System Live
+                <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 uppercase tracking-widest">
+                  Live
                 </span>
               </div>
-              <p className="text-sm md:text-base text-white/70 mb-2 max-w-2xl leading-relaxed">
+              <p className="text-xs md:text-sm text-white/70 mb-4 max-w-xl leading-relaxed">
                 {isEn
-                  ? "You can create multiple projects, but all calls currently route to "
-                  : "Puedes crear múltiples proyectos, pero todas las llamadas se dirigen actualmente a "}
-                <span className="text-white font-mono font-bold bg-white/10 px-2 py-0.5 rounded-md ml-1">+1 (978) 344-6298</span>
-              </p>
-              <p className="text-xs text-white/40 italic">
-                {isEn
-                  ? "The AI uses the logic of whichever project you set as 'Active' in your projects list."
-                  : "La IA utiliza la lógica de cualquier proyecto que marques como 'Activo' en tu lista de proyectos."}
+                  ? "All projects share one number. Calls to "
+                  : "Todos comparten un número. Las llamadas a "}
+                <span className="text-white font-mono font-bold bg-white/10 px-1.5 py-0.5 rounded ml-1 text-[11px] md:text-sm">+1 (978) 344-6298</span>
+                {isEn ? " use the " : " usan el "}
+                <span className="text-emerald-400 font-bold uppercase text-[9px] bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">{isEn ? "Active" : "Activo"}</span>
+                {isEn ? " config." : " proyecto."}
               </p>
             </div>
 
             <Link
               to="/projects"
-              className="w-full md:w-auto btn-secondary text-sm px-6 py-3 md:py-4 h-fit whitespace-nowrap group/btn relative overflow-hidden"
+              className="w-full md:w-auto btn-secondary text-xs md:text-sm px-6 py-3 h-fit whitespace-nowrap"
             >
-              <span className="relative z-10 flex items-center justify-center gap-2">
-                {isEn ? "Manage Projects" : "Gestionar Proyectos"}
-                <motion.span
-                  className="inline-block"
-                  animate={{ x: [0, 5, 0] }}
-                  transition={{ repeat: Infinity, duration: 1.5 }}
-                >→</motion.span>
-              </span>
-              <div className="absolute inset-0 bg-white/10 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
+              {isEn ? "Manage Projects" : "Gestionar Proyectos"}
             </Link>
           </div>
         </div>
       </motion.div>
 
-      {/* Stats Grid - Premium */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Stats Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
         {stats.map((stat, i) => (
           <motion.div
             key={i}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: i * 0.1 }}
-            whileHover={{ y: -5, scale: 1.02 }}
-            className="glass p-6 rounded-3xl flex items-center gap-5 relative overflow-hidden group border border-white/5 hover:border-accent/30 transition-all duration-500"
+            className={`glass p-4 md:p-6 rounded-2xl md:rounded-3xl flex flex-col md:flex-row items-center md:items-center gap-3 md:gap-5 relative overflow-hidden group border border-white/5 ${i === 2 ? 'col-span-2 md:col-span-1' : ''}`}
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-white/70 group-hover:bg-accent/20 group-hover:text-accent transition-colors duration-300 relative z-10">
-              <stat.icon size={26} strokeWidth={1.5} />
+            <div className="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-white/5 flex items-center justify-center text-white/40 group-hover:bg-accent/20 group-hover:text-accent transition-all duration-300 relative z-10">
+              <stat.icon size={20} md:size={26} strokeWidth={1.5} />
             </div>
-            <div className="relative z-10">
-              <p className="text-white/40 text-xs font-semibold uppercase tracking-wider mb-1 group-hover:text-white/60 transition-colors">{stat.label}</p>
-              <p className="text-3xl font-bold tracking-tight">{stat.value}</p>
+            <div className="relative z-10 text-center md:text-left">
+              <p className="text-white/40 text-[10px] md:text-xs font-semibold uppercase tracking-wider mb-0.5 group-hover:text-white/60 transition-colors">{stat.label}</p>
+              <p className="text-xl md:text-3xl font-bold tracking-tight">{stat.value}</p>
             </div>
-            {/* Decorative background element */}
-            <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-accent/5 rounded-full blur-2xl group-hover:bg-accent/20 transition-colors duration-500 pointer-events-none" />
           </motion.div>
         ))}
       </div>
 
-      {/* Recent Activity - Premium List */}
-      <div className="glass p-8 rounded-3xl mt-2 border border-white/5 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-accent/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+      {/* Recent Activity */}
+      <div className="glass p-6 md:p-8 rounded-[1.5rem] md:rounded-[2rem] border border-white/5 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 rounded-full blur-[100px] pointer-events-none" />
 
-        <div className="flex items-center justify-between mb-8 relative z-10">
-          <h2 className="text-2xl font-bold tracking-tight flex items-center gap-3">
+        <div className="flex items-center justify-between mb-6 md:mb-8 relative z-10">
+          <h2 className="text-xl md:text-2xl font-bold tracking-tight flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-accent/20 flex items-center justify-center text-accent">
               <Activity size={18} />
             </div>
-            {isEn ? "Recent Activity" : "Actividad Reciente"}
+            {isEn ? "Recent Activity" : "Actividad"}
           </h2>
           {projects.length > 0 && (
-            <Link to="/projects" className="text-sm font-medium text-accent hover:text-white transition-colors">
+            <Link to="/projects" className="text-xs md:text-sm font-medium text-accent hover:text-white transition-colors">
               {isEn ? "View All" : "Ver Todos"}
             </Link>
           )}
@@ -163,15 +146,11 @@ const Dashboard = () => {
         <div className="relative z-10">
           {projects.length === 0 ? (
             <div className="text-center py-12">
-              <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4 text-white/30">
-                <Activity size={32} />
-              </div>
-              <h3 className="text-lg font-medium mb-2">{isEn ? "No activity yet" : "Sin actividad aún"}</h3>
-              <p className="text-white/50 mb-6 max-w-sm mx-auto">
-                {isEn ? "Create your first project to start seeing activity in your dashboard." : "Crea tu primer proyecto para empezar a ver actividad en tu tablero."}
+              <p className="text-white/50 text-sm mb-6">
+                {isEn ? "Create your first project to start." : "Crea tu primer proyecto para empezar."}
               </p>
-              <Link to="/projects/create" className="btn-secondary inline-flex items-center gap-2">
-                <Plus size={18} /> {isEn ? "Create Project" : "Crear Proyecto"}
+              <Link to="/projects/create" className="btn-secondary py-2 text-sm inline-flex items-center gap-2">
+                <Plus size={16} /> {isEn ? "Create Project" : "Crear Proyecto"}
               </Link>
             </div>
           ) : (
@@ -179,36 +158,30 @@ const Dashboard = () => {
               {projects.slice(0, 4).map((project, i) => (
                 <motion.div
                   key={project.uid || project._id || i}
-                  initial={{ opacity: 0, x: -20 }}
+                  initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.4, delay: i * 0.1 }}
                 >
                   <Link
                     to={`/projects/${project.uid || project._id}`}
-                    className="flex items-center justify-between p-5 rounded-2xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.05] hover:border-white/10 transition-all duration-300 group"
+                    className="flex items-center justify-between p-4 md:p-5 rounded-2xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.05] transition-all group"
                   >
-                    <div className="flex items-center gap-5">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-dark to-white/5 border border-white/10 flex items-center justify-center font-bold text-lg text-white group-hover:scale-110 group-hover:border-accent/30 group-hover:text-accent transition-all duration-300 shadow-inner">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-dark border border-white/10 flex items-center justify-center font-bold text-base text-white group-hover:text-accent group-hover:border-accent/30 transition-all">
                         {project.name.charAt(0).toUpperCase()}
                       </div>
-                      <div>
-                        <p className="font-semibold text-lg mb-0.5 group-hover:text-accent transition-colors">{project.name}</p>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-medium text-white/40 px-2 py-0.5 rounded bg-white/5 border border-white/5">
-                            {project.type}
-                          </span>
-                          {project.isActive && (
-                            <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">
-                              Active
-                            </span>
-                          )}
-                        </div>
+                      <div className="overflow-hidden">
+                        <p className="font-semibold text-sm md:text-lg mb-0.5 truncate group-hover:text-accent transition-colors">{project.name}</p>
+                        <span className="text-[10px] md:text-xs font-medium text-white/30 px-2 py-0.5 rounded bg-white/5">
+                          {project.type}
+                        </span>
                       </div>
                     </div>
-                    <div className="flex flex-col items-end gap-2">
-                      <div className="text-xs text-white/30 font-medium bg-dark/50 px-3 py-1.5 rounded-full border border-white/5 group-hover:border-white/10 transition-colors">
-                        {isEn ? "Just now" : "Ahora mismo"}
-                      </div>
+                    <div className="flex items-center gap-3">
+                      {project.isActive && (
+                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)] hidden sm:block" />
+                      )}
+                      <ArrowRight size={16} className="text-white/20 group-hover:text-white group-hover:translate-x-1 transition-all" />
                     </div>
                   </Link>
                 </motion.div>
