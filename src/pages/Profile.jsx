@@ -184,10 +184,18 @@ const Profile = () => {
           <div className="absolute inset-0 bg-white/5 backdrop-blur-[2px]" />
           <div className="absolute -bottom-12 md:-bottom-16 left-1/2 md:left-8 -translate-x-1/2 md:translate-x-0 z-10">
             <div className="relative group">
-              <div className="w-24 h-24 md:w-32 md:h-32 rounded-2xl md:rounded-3xl bg-dark border-4 border-dark flex items-center justify-center overflow-hidden shadow-2xl rotate-3 group-hover:rotate-0 transition-transform duration-500">
-                <div className="w-full h-full bg-gradient-to-br from-accent to-purple-500 flex items-center justify-center text-3xl md:text-5xl font-bold text-white shadow-[0_0_30px_rgba(99,102,241,0.6)]">
-                  {formData.name.charAt(0).toUpperCase()}
-                </div>
+              <div className="w-24 h-24 md:w-32 md:h-32 rounded-2xl md:rounded-3xl bg-dark border-4 border-dark flex items-center justify-center overflow-hidden shadow-2xl rotate-3 group-hover:rotate-0 transition-all duration-500">
+                {user?.image ? (
+                  <img 
+                    src={user.image} 
+                    alt={formData.name} 
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-accent to-purple-500 flex items-center justify-center text-3xl md:text-5xl font-bold text-white shadow-[0_0_30px_rgba(99,102,241,0.6)]">
+                    {formData.name.charAt(0).toUpperCase()}
+                  </div>
+                )}
               </div>
               <button className="absolute inset-0 bg-black/60 rounded-2xl md:rounded-3xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <Camera size={24} className="md:size-8 text-white drop-shadow-lg" />
