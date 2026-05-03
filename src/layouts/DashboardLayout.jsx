@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Folder, User, LogOut, Menu, X, Plus } from 'lucide-react';
+import { Home, Folder, User, LogOut, Menu, X, Plus, Globe } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
+import { useLanguage } from '../context/LanguageContext';
 
 const DashboardLayout = () => {
+  const { lang, toggleLanguage } = useLanguage();
+  const isEn = lang === 'en';
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const location = useLocation();
   const logout = useAuthStore(state => state.logout);
@@ -66,7 +69,9 @@ const DashboardLayout = () => {
               >
                 <item.icon size={20} className="shrink-0" />
                 <span className={`whitespace-nowrap transition-opacity duration-300 ${!isSidebarOpen ? 'md:opacity-0 md:hidden' : 'opacity-100'}`}>
-                  {item.name === 'Projects' ? 'Proyectos' : item.name === 'Profile' ? 'Perfil' : item.name}
+                  {isEn 
+                    ? item.name 
+                    : (item.name === 'Projects' ? 'Proyectos' : item.name === 'Profile' ? 'Perfil' : item.name)}
                 </span>
               </Link>
             );
@@ -77,18 +82,35 @@ const DashboardLayout = () => {
           <Link
             to="/projects/create"
             className="w-full btn-primary py-3 flex items-center justify-center gap-2 mb-4 group"
-            title="Crear Proyecto"
+            title={isEn ? "Create Project" : "Crear Proyecto"}
           >
             <Plus size={20} className="group-hover:rotate-90 transition-transform shrink-0" />
-            <span className={`whitespace-nowrap ${!isSidebarOpen ? 'md:hidden' : ''}`}>Nuevo Proyecto</span>
+            <span className={`whitespace-nowrap ${!isSidebarOpen ? 'md:hidden' : ''}`}>
+              {isEn ? "New Project" : "Nuevo Proyecto"}
+            </span>
           </Link>
+
+          <button 
+            onClick={toggleLanguage}
+            className="w-full flex items-center justify-between px-4 py-3 text-white/50 hover:text-white hover:bg-white/5 rounded-xl transition-colors mb-2"
+            title={isEn ? "Switch to Spanish" : "Cambiar a Inglés"}
+          >
+            <div className="flex items-center gap-4">
+              <Globe size={20} className="shrink-0" />
+              <span className={`whitespace-nowrap ${!isSidebarOpen ? 'md:hidden' : ''}`}>{isEn ? 'English' : 'Español'}</span>
+            </div>
+            <span className={`text-xs font-bold bg-white/10 px-2 py-0.5 rounded ${!isSidebarOpen ? 'md:hidden' : ''}`}>{isEn ? 'EN' : 'ES'}</span>
+          </button>
+
           <button
             onClick={logout}
             className="w-full flex items-center gap-4 px-4 py-3 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-xl transition-colors"
-            title="Cerrar Sesión"
+            title={isEn ? "Logout" : "Cerrar Sesión"}
           >
             <LogOut size={20} className="shrink-0" />
-            <span className={`whitespace-nowrap ${!isSidebarOpen ? 'md:hidden' : ''}`}>Cerrar Sesión</span>
+            <span className={`whitespace-nowrap ${!isSidebarOpen ? 'md:hidden' : ''}`}>
+              {isEn ? "Logout" : "Cerrar Sesión"}
+            </span>
           </button>
         </div>
       </aside>

@@ -13,9 +13,6 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
   async (config) => {
     const token = useAuthStore.getState().token;
-    console.log(
-      `API Request: ${config.method?.toUpperCase()} ${config.url} - Token in JS Store: ${!!token}`,
-    );
 
     // If we have a token in JS (e.g. from a previous version or if the API also sends it in body), send it.
     // Otherwise, browser cookies will handle it if withCredentials is true.
