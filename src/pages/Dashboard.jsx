@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuthStore } from '../store/authStore';
 import { useProjects } from '../hooks/useProjects';
-import { Plus, Activity, Cpu, Code2, Loader2 } from 'lucide-react';
+import { Plus, Activity, Cpu, Code2, Loader2, Phone } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -55,6 +55,43 @@ const Dashboard = () => {
           <Plus size={18} /> {isEn ? "New Project" : "Nuevo Proyecto"}
         </Link>
       </header>
+
+      {/* Prototype Status Card */}
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="glass p-6 rounded-3xl border border-accent/20 bg-gradient-to-br from-accent/10 to-transparent relative overflow-hidden"
+      >
+        <div className="absolute -right-10 -top-10 w-40 h-40 bg-accent/10 blur-[50px] rounded-full" />
+        <div className="flex flex-col md:flex-row items-center gap-6 relative z-10">
+          <div className="w-16 h-16 rounded-2xl bg-accent/20 flex items-center justify-center text-accent shadow-lg shadow-accent/20">
+            <Phone size={32} />
+          </div>
+          <div className="flex-1 text-center md:text-left">
+            <h3 className="text-xl font-bold mb-2 flex items-center justify-center md:justify-start gap-2">
+              {isEn ? "Prototype Active Number" : "Número Activo del Prototipo"}
+              <span className="px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/20">LIVE</span>
+            </h3>
+            <p className="text-sm text-white/60 mb-1">
+              {isEn 
+                ? "You can create multiple projects, but all calls currently route to " 
+                : "Puedes crear múltiples proyectos, pero todas las llamadas se dirigen actualmente a "}
+              <span className="text-white font-mono font-bold">+1 (978) 344-6298</span>
+            </p>
+            <p className="text-xs text-white/40 italic">
+              {isEn 
+                ? "The AI uses the logic of whichever project you set as 'Active' in your projects list." 
+                : "La IA utiliza la lógica de cualquier proyecto que marques como 'Activo' en tu lista de proyectos."}
+            </p>
+          </div>
+          <Link 
+            to="/projects" 
+            className="btn-secondary text-xs px-6 py-2 h-fit whitespace-nowrap"
+          >
+            {isEn ? "Manage Active Project" : "Gestionar Proyecto Activo"}
+          </Link>
+        </div>
+      </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {stats.map((stat, i) => (

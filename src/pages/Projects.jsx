@@ -16,7 +16,8 @@ import {
   Save, 
   User as UserIcon,
   AlertCircle,
-  CheckCircle2
+  CheckCircle2,
+  Phone
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
@@ -140,6 +141,38 @@ const Projects = () => {
           </Link>
         </div>
       </header>
+
+      {/* Prototype Notice */}
+      <motion.div 
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="glass p-5 rounded-2xl border border-accent/20 bg-accent/5 flex flex-col md:flex-row items-start md:items-center gap-4 relative overflow-hidden"
+      >
+        <div className="absolute top-0 right-0 w-32 h-full bg-accent/5 -skew-x-12 transform translate-x-16 pointer-events-none" />
+        <div className="w-10 h-10 rounded-xl bg-accent/20 flex items-center justify-center text-accent flex-shrink-0">
+          <Phone size={20} />
+        </div>
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-accent/20 text-accent uppercase tracking-wider">
+              Prototype Mode
+            </span>
+            <p className="text-sm font-bold text-white">
+              {isEn ? "Shared Active Number" : "Número Activo Compartido"}
+            </p>
+          </div>
+          <p className="text-xs text-white/60 leading-relaxed max-w-2xl">
+            {isEn 
+              ? "As this is a prototype, you can create multiple projects but all share one number. Calls to " 
+              : "Como este es un prototipo, puedes crear varios proyectos pero todos comparten un único número. Las llamadas a "}
+            <span className="text-accent font-bold">+1 (978) 344-6298</span>
+            {isEn 
+              ? " will use the configuration of the project currently set as "
+              : " usarán la configuración del proyecto marcado actualmente como "}
+            <span className="text-emerald-400 font-bold uppercase text-[10px]">{isEn ? "Active" : "Activo"}</span>.
+          </p>
+        </div>
+      </motion.div>
 
       {successMessage && (
         <motion.div 
