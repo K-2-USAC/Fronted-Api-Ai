@@ -17,7 +17,8 @@ import {
   User as UserIcon,
   AlertCircle,
   CheckCircle2,
-  Phone
+  Phone,
+  ArrowRight
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';

@@ -13,6 +13,7 @@ import {
   Paintbrush,
   Globe,
   CalendarDays,
+  AlertCircle,
 } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
 

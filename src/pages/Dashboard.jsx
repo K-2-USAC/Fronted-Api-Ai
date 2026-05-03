@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuthStore } from '../store/authStore';
 import { useProjects } from '../hooks/useProjects';
-import { Plus, Activity, Cpu, Code2, Loader2, Phone } from 'lucide-react';
+import { Plus, Activity, Cpu, Code2, Loader2, Phone, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 
