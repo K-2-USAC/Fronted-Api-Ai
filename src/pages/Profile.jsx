@@ -137,13 +137,18 @@ const Profile = () => {
 
   return (
     <div className="max-w-3xl mx-auto flex flex-col gap-8 w-full pb-12">
-      <header>
-        <h1 className="text-3xl font-bold tracking-tight mb-1">{isEn ? "Profile" : "Perfil"}</h1>
-        <p className="text-white/50">
-          {isEn 
-            ? "Manage your personal information and account preferences." 
-            : "Gestiona tu información personal y preferencias de cuenta."}
-        </p>
+      <header className="relative pb-6 border-b border-white/5">
+        <div className="absolute -left-10 -top-10 w-40 h-40 bg-accent/20 blur-[80px] rounded-full pointer-events-none" />
+        <div className="relative z-10">
+          <h1 className="text-4xl font-extrabold tracking-tight mb-2 bg-clip-text text-transparent bg-gradient-to-r from-white via-white/90 to-white/60">
+            {isEn ? "Profile" : "Perfil"}
+          </h1>
+          <p className="text-white/50 text-sm md:text-base">
+            {isEn 
+              ? "Manage your personal information and account preferences." 
+              : "Gestiona tu información personal y preferencias de cuenta."}
+          </p>
+        </div>
       </header>
 
       {successMessage && (
@@ -171,18 +176,21 @@ const Profile = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="glass rounded-3xl overflow-hidden"
+        className="glass rounded-[2rem] overflow-hidden border border-white/10 relative"
       >
-        <div className="h-32 bg-gradient-to-r from-accent/20 to-accent/5 relative">
-          <div className="absolute -bottom-12 left-8">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-accent/10 blur-[100px] pointer-events-none" />
+        
+        <div className="h-40 bg-gradient-to-r from-accent/30 via-purple-500/20 to-accent/10 relative overflow-hidden">
+          <div className="absolute inset-0 bg-white/5 backdrop-blur-[2px]" />
+          <div className="absolute -bottom-16 left-8 z-10">
             <div className="relative group">
-              <div className="w-24 h-24 rounded-full bg-dark border-4 border-dark flex items-center justify-center overflow-hidden">
-                <div className="w-full h-full bg-gradient-to-br from-accent to-purple-500 flex items-center justify-center text-3xl font-bold text-white shadow-[0_0_20px_rgba(99,102,241,0.5)]">
+              <div className="w-32 h-32 rounded-3xl bg-dark border-4 border-dark flex items-center justify-center overflow-hidden shadow-2xl rotate-3 group-hover:rotate-0 transition-transform duration-500">
+                <div className="w-full h-full bg-gradient-to-br from-accent to-purple-500 flex items-center justify-center text-5xl font-bold text-white shadow-[0_0_30px_rgba(99,102,241,0.6)]">
                   {formData.name.charAt(0).toUpperCase()}
                 </div>
               </div>
-              <button className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                <Camera size={24} className="text-white" />
+              <button className="absolute inset-0 bg-black/60 rounded-3xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <Camera size={32} className="text-white drop-shadow-lg" />
               </button>
             </div>
           </div>

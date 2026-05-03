@@ -110,22 +110,24 @@ const Projects = () => {
 
   return (
     <div className="flex flex-col gap-8 pb-20">
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight mb-1">
+      {/* Enhanced Header */}
+      <header className="relative flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-white/5">
+        <div className="absolute -left-10 -top-10 w-40 h-40 bg-accent/20 blur-[80px] rounded-full pointer-events-none" />
+        <div className="relative z-10">
+          <h1 className="text-4xl font-extrabold tracking-tight mb-2 bg-clip-text text-transparent bg-gradient-to-r from-white via-white/90 to-white/60">
             {isAdmin 
               ? (isEn ? 'All Projects' : 'Todos los Proyectos') 
               : (isEn ? 'My Projects' : 'Mis Proyectos')}
           </h1>
-          <p className="text-white/50">
+          <p className="text-white/50 text-sm md:text-base">
             {isAdmin 
               ? (isEn ? 'System administration and support dashboard.' : 'Panel de administración y soporte del sistema.') 
-              : (isEn ? 'Manage your generated applications.' : 'Gestiona tus aplicaciones generadas.')}
+              : (isEn ? 'Manage your generated AI applications.' : 'Gestiona tus aplicaciones de IA generadas.')}
           </p>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="relative group">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-accent transition-colors" size={18} />
+        <div className="flex flex-col sm:flex-row items-center gap-4 relative z-10 w-full md:w-auto">
+          <div className="relative group w-full sm:w-auto">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-accent transition-colors" size={18} />
             <input 
               type="text" 
               placeholder={isAdmin 
@@ -133,43 +135,45 @@ const Projects = () => {
                 : (isEn ? "Search projects..." : "Buscar proyectos...")}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 w-full md:w-64 focus:outline-none focus:border-accent/50 focus:bg-white/10 transition-all"
+              className="bg-white/5 border border-white/10 rounded-2xl py-3 pl-12 pr-4 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent focus:bg-white/10 transition-all shadow-inner"
             />
           </div>
-          <Link to="/projects/create" className="btn-primary flex items-center justify-center gap-2 whitespace-nowrap">
-            <Plus size={18} /> {isEn ? "New Project" : "Nuevo Proyecto"}
+          <Link to="/projects/create" className="btn-primary flex items-center justify-center gap-2 w-full sm:w-auto whitespace-nowrap group">
+            <Plus size={18} className="group-hover:rotate-90 transition-transform" /> 
+            {isEn ? "New Project" : "Nuevo Proyecto"}
           </Link>
         </div>
       </header>
 
       {/* Prototype Notice */}
+      {/* Premium Prototype Notice */}
       <motion.div 
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="glass p-5 rounded-2xl border border-accent/20 bg-accent/5 flex flex-col md:flex-row items-start md:items-center gap-4 relative overflow-hidden"
+        className="glass p-6 rounded-3xl border border-accent/20 bg-gradient-to-r from-accent/10 via-transparent to-transparent flex flex-col md:flex-row items-start md:items-center gap-5 relative overflow-hidden group"
       >
-        <div className="absolute top-0 right-0 w-32 h-full bg-accent/5 -skew-x-12 transform translate-x-16 pointer-events-none" />
-        <div className="w-10 h-10 rounded-xl bg-accent/20 flex items-center justify-center text-accent flex-shrink-0">
-          <Phone size={20} />
+        <div className="absolute right-0 top-0 w-64 h-full bg-accent/5 blur-3xl pointer-events-none group-hover:bg-accent/10 transition-colors duration-700" />
+        <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-accent/30 to-accent/5 flex items-center justify-center text-accent flex-shrink-0 shadow-lg shadow-accent/20 border border-accent/10 backdrop-blur-md">
+          <Phone size={24} />
         </div>
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-accent/20 text-accent uppercase tracking-wider">
+        <div className="flex-1 relative z-10">
+          <div className="flex flex-wrap items-center gap-3 mb-2">
+            <span className="px-3 py-1 rounded-full text-[10px] font-bold bg-accent/20 text-accent uppercase tracking-widest shadow-[0_0_15px_rgba(99,102,241,0.2)]">
               Prototype Mode
             </span>
-            <p className="text-sm font-bold text-white">
+            <p className="text-sm font-bold text-white tracking-wide">
               {isEn ? "Shared Active Number" : "Número Activo Compartido"}
             </p>
           </div>
-          <p className="text-xs text-white/60 leading-relaxed max-w-2xl">
+          <p className="text-sm text-white/70 leading-relaxed max-w-3xl">
             {isEn 
               ? "As this is a prototype, you can create multiple projects but all share one number. Calls to " 
               : "Como este es un prototipo, puedes crear varios proyectos pero todos comparten un único número. Las llamadas a "}
-            <span className="text-accent font-bold">+1 (978) 344-6298</span>
+            <span className="text-white font-mono font-bold bg-white/10 px-2 py-0.5 rounded ml-1">+1 (978) 344-6298</span>
             {isEn 
               ? " will use the configuration of the project currently set as "
               : " usarán la configuración del proyecto marcado actualmente como "}
-            <span className="text-emerald-400 font-bold uppercase text-[10px]">{isEn ? "Active" : "Activo"}</span>.
+            <span className="text-emerald-400 font-bold uppercase text-[10px] bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">{isEn ? "Active" : "Activo"}</span>.
           </p>
         </div>
       </motion.div>
@@ -226,75 +230,88 @@ const Projects = () => {
           {projects.map((project, i) => (
             <motion.div
               key={project.uid || project._id}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 0.4, delay: i * 0.05 }}
-              className="glass p-6 rounded-2xl group flex flex-col h-full border border-white/10 hover:border-accent/50 transition-all duration-300 relative overflow-hidden"
+              whileHover={{ y: -5 }}
+              className={`glass p-6 md:p-8 rounded-[2rem] group flex flex-col h-full border ${project.isActive ? 'border-accent/40 shadow-[0_0_30px_rgba(99,102,241,0.15)] bg-accent/[0.02]' : 'border-white/5 hover:border-white/20 hover:bg-white/[0.02]'} transition-all duration-500 relative overflow-hidden`}
             >
-              <div className="flex justify-between items-start mb-6">
-                <div className="flex gap-2 items-center">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent/40 to-accent/10 flex items-center justify-center text-white font-bold text-lg shadow-[0_0_15px_rgba(99,102,241,0.2)]">
+              {/* Dynamic Background */}
+              <div className={`absolute -right-20 -top-20 w-40 h-40 rounded-full blur-[60px] pointer-events-none transition-colors duration-700 ${project.isActive ? 'bg-accent/30' : 'bg-white/5 group-hover:bg-accent/10'}`} />
+
+              <div className="flex justify-between items-start mb-6 relative z-10">
+                <div className="flex gap-4 items-center">
+                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-white font-bold text-xl transition-all duration-500 ${project.isActive ? 'bg-gradient-to-br from-accent to-accent/50 shadow-lg shadow-accent/30' : 'bg-gradient-to-br from-white/10 to-transparent border border-white/10 group-hover:border-accent/30'}`}>
                     {project.name.charAt(0).toUpperCase()}
                   </div>
                   {project.isActive ? (
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/20">ACTIVE</span>
+                    <span className="px-3 py-1 rounded-full text-[10px] font-extrabold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-[0_0_10px_rgba(16,185,129,0.2)] uppercase tracking-wider">
+                      Active
+                    </span>
                   ) : (
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-white/10 text-white/50 border border-white/10">INACTIVE</span>
+                    <span className="px-3 py-1 rounded-full text-[10px] font-bold bg-white/5 text-white/40 border border-white/10 uppercase tracking-wider">
+                      Inactive
+                    </span>
                   )}
                 </div>
-                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                
+                {/* Actions */}
+                <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity translate-x-2 group-hover:translate-x-0 duration-300">
                   {!project.isActive && (
                     <button 
                       onClick={() => handleActivate(project.uid || project._id)}
-                      className="p-2 text-white/40 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-lg transition-all"
+                      className="p-2.5 text-white/40 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-xl transition-all"
                       title="Set as Active"
                     >
-                      <CheckCircle2 size={16} />
+                      <CheckCircle2 size={18} />
                     </button>
                   )}
                   <button 
                     onClick={() => setEditingProject({ ...project })}
-                    className="p-2 text-white/40 hover:text-white hover:bg-white/5 rounded-lg transition-all"
+                    className="p-2.5 text-white/40 hover:text-white hover:bg-white/10 rounded-xl transition-all"
                     title="Edit project"
                   >
-                    <Edit2 size={16} />
+                    <Edit2 size={18} />
                   </button>
                   <button 
                     onClick={() => setIsDeleting(project.uid || project._id)}
-                    className="p-2 text-white/40 hover:text-red-400 hover:bg-red-500/5 rounded-lg transition-all"
+                    className="p-2.5 text-white/40 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all"
                     title="Delete project"
                   >
-                    <Trash2 size={16} />
+                    <Trash2 size={18} />
                   </button>
                 </div>
               </div>
               
-              <h3 className="text-xl font-semibold mb-2 group-hover:text-accent transition-colors">{project.name}</h3>
-              <p className="text-white/50 text-sm line-clamp-2 mb-4 flex-grow">{project.description}</p>
-              
-              <div className="flex flex-wrap items-center gap-2 text-[10px] font-medium text-white/40 mb-6">
-                <span className="px-2 py-1 rounded bg-white/5 flex items-center gap-1">
-                  <Box size={12} /> {project.type}
-                </span>
-                <span className="px-2 py-1 rounded bg-white/5 uppercase">
-                  {project.language}
-                </span>
-                {isAdmin && project.user && (
-                  <span className="px-2 py-1 rounded bg-accent/10 text-accent flex items-center gap-1 ml-auto">
-                    <UserIcon size={12} /> {project.user.name}
+              <div className="relative z-10 flex-grow">
+                <h3 className={`text-2xl font-bold mb-3 transition-colors ${project.isActive ? 'text-white' : 'group-hover:text-accent'}`}>{project.name}</h3>
+                <p className="text-white/60 text-sm line-clamp-3 mb-6 leading-relaxed">{project.description}</p>
+                
+                <div className="flex flex-wrap items-center gap-2 text-[11px] font-semibold text-white/50 mb-8">
+                  <span className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 flex items-center gap-1.5">
+                    <Box size={14} className={project.isActive ? "text-accent" : ""} /> {project.type}
                   </span>
-                )}
+                  <span className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 uppercase tracking-wide">
+                    {project.language}
+                  </span>
+                  {isAdmin && project.user && (
+                    <span className="px-3 py-1.5 rounded-lg bg-accent/10 text-accent border border-accent/20 flex items-center gap-1.5 ml-auto">
+                      <UserIcon size={14} /> {project.user.name}
+                    </span>
+                  )}
+                </div>
               </div>
               
-              <div className="border-t border-white/10 pt-4 flex items-center justify-between mt-auto">
-                <span className="text-[10px] text-white/30 italic">
-                  ID: {(project.uid || project._id).substring(0, 8)}...
+              <div className="border-t border-white/10 pt-5 flex items-center justify-between relative z-10 mt-auto">
+                <span className="text-xs text-white/30 font-mono">
+                  {(project.uid || project._id).substring(0, 8)}
                 </span>
                 <Link 
                   to={`/projects/${project.uid || project._id}`}
-                  className="flex items-center gap-1 text-sm text-accent hover:text-white transition-colors font-medium"
+                  className={`flex items-center gap-2 text-sm font-semibold transition-all group/link px-4 py-2 rounded-xl ${project.isActive ? 'bg-accent text-white hover:bg-accent/90 shadow-[0_0_15px_rgba(99,102,241,0.4)]' : 'bg-white/5 text-white/80 hover:bg-white/10 hover:text-white'}`}
                 >
-                  {isEn ? "Details" : "Detalles"} <ExternalLink size={14} />
+                  {isEn ? "Details" : "Detalles"} 
+                  <ExternalLink size={16} className="group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform" />
                 </Link>
               </div>
             </motion.div>
