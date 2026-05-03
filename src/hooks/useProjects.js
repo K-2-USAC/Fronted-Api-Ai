@@ -9,8 +9,11 @@ export const useProjects = () => {
     setIsLoading(true);
     setError(null);
     try {
+      const params = {};
+      if (name.trim()) params.name = name.trim();
+      
       const response = await apiClient.get('/projects', {
-        params: { name }
+        params
       });
       return response.data.projects || [];
     } catch (err) {
