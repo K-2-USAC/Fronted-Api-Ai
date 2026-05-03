@@ -3,8 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "../hooks/useAuth";
 import { GoogleLogin } from "@react-oauth/google";
+import { useLanguage } from "../context/LanguageContext";
 
 const Register = () => {
+  const { lang } = useLanguage();
+  const isEn = lang === 'en';
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [phone, setPhone] = useState("");
@@ -30,7 +33,7 @@ const Register = () => {
       } else {
         // If no token, registration was successful but we need to log in manually
         navigate("/login", {
-          state: { message: "Registration successful! Please log in." },
+          state: { message: isEn ? "Registration successful! Please log in." : "¡Registro exitoso! Por favor inicia sesión." },
         });
       }
     } catch (err) {
@@ -59,9 +62,11 @@ const Register = () => {
 
       <div className="mb-10">
         <h1 className="text-3xl font-bold tracking-tight mb-2">
-          Create an account
+          {isEn ? "Create an account" : "Crear una cuenta"}
         </h1>
-        <p className="text-white/50">El futuro de los call centers con IA</p>
+        <p className="text-white/50">
+          {isEn ? "The future of AI call centers" : "El futuro de los call centers con IA"}
+        </p>
         {error && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
@@ -80,7 +85,7 @@ const Register = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div>
             <label className="block text-sm font-medium text-white/70 mb-2">
-              First Name
+              {isEn ? "First Name" : "Nombre"}
             </label>
             <input
               type="text"
@@ -93,7 +98,7 @@ const Register = () => {
           </div>
           <div>
             <label className="block text-sm font-medium text-white/70 mb-2">
-              Surname
+              {isEn ? "Surname" : "Apellido"}
             </label>
             <input
               type="text"
@@ -108,7 +113,7 @@ const Register = () => {
 
         <div>
           <label className="block text-sm font-medium text-white/70 mb-2">
-            Phone Number
+            {isEn ? "Phone Number" : "Número de Teléfono"}
           </label>
           <input
             type="tel"
@@ -122,7 +127,7 @@ const Register = () => {
 
         <div>
           <label className="block text-sm font-medium text-white/70 mb-2">
-            Email
+            {isEn ? "Email" : "Correo Electrónico"}
           </label>
           <input
             type="email"
@@ -136,7 +141,7 @@ const Register = () => {
 
         <div>
           <label className="block text-sm font-medium text-white/70 mb-2">
-            Password
+            {isEn ? "Password" : "Contraseña"}
           </label>
           <input
             type="password"
@@ -161,14 +166,14 @@ const Register = () => {
               className="w-5 h-5 border-2 border-dark/30 border-t-dark rounded-full"
             />
           ) : (
-            "Create Account"
+            isEn ? "Create Account" : "Crear Cuenta"
           )}
         </button>
 
         <div className="relative flex items-center py-4">
           <div className="flex-grow border-t border-white/10"></div>
           <span className="flex-shrink-0 mx-4 text-white/30 text-xs">
-            OR CONTINUE WITH
+            {isEn ? "OR CONTINUE WITH" : "O CONTINÚA CON"}
           </span>
           <div className="flex-grow border-t border-white/10"></div>
         </div>
@@ -185,12 +190,12 @@ const Register = () => {
         </div>
 
         <p className="text-center text-sm text-white/50 mt-4">
-          Already have an account?{" "}
+          {isEn ? "Already have an account?" : "¿Ya tienes una cuenta?"}{" "}
           <Link
             to="/login"
             className="text-white hover:text-accent transition-colors"
           >
-            Sign in
+            {isEn ? "Sign in" : "Inicia sesión"}
           </Link>
         </p>
       </form>

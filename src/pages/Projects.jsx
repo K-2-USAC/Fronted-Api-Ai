@@ -19,8 +19,11 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../context/LanguageContext';
 
 const Projects = () => {
+  const { lang } = useLanguage();
+  const isEn = lang === 'en';
   const user = useAuthStore(state => state.user);
   const isAdmin = user?.role === 'admin';
   const { getProjects, updateProject, deleteProject, activateProject, isLoading, error } = useProjects();
@@ -55,7 +58,7 @@ const Projects = () => {
       await deleteProject(id);
       setProjects(projects.filter(p => p.uid !== id && p._id !== id));
       setIsDeleting(null);
-      setSuccessMessage('Project deleted successfully');
+      setSuccessMessage(isEn ? 'Project deleted successfully' : 'Proyecto eliminado correctamente');
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
       console.error('Delete failed:', err);
@@ -69,7 +72,7 @@ const Projects = () => {
     try {
       await activateProject(id);
       fetchProjects(searchTerm);
-      setSuccessMessage('Project activated successfully');
+      setSuccessMessage(isEn ? 'Project activated successfully' : 'Proyecto activado correctamente');
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
       console.error('Activation failed:', err);
@@ -86,7 +89,7 @@ const Projects = () => {
       const updated = await updateProject(id, editingProject);
       setProjects(projects.map(p => (p.uid === id || p._id === id) ? updated : p));
       setEditingProject(null);
-      setSuccessMessage('Project updated successfully');
+      setSuccessMessage(isEn ? 'Project updated successfully' : 'Proyecto actualizado correctamente');
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
       console.error('Update failed:', err);
@@ -99,7 +102,7 @@ const Projects = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px]">
         <Loader2 className="w-10 h-10 animate-spin text-accent mb-4" />
-        <p className="text-white/50">Loading projects...</p>
+        <p className="text-white/50">{isEn ? "Loading projects..." : "Cargando proyectos..."}</p>
       </div>
     );
   }
@@ -109,10 +112,14 @@ const Projects = () => {
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight mb-1">
-            {isAdmin ? 'All Projects' : 'My Projects'}
+            {isAdmin 
+              ? (isEn ? 'All Projects' : 'Todos los Proyectos') 
+              : (isEn ? 'My Projects' : 'Mis Proyectos')}
           </h1>
           <p className="text-white/50">
-            {isAdmin ? 'System administration and support dashboard.' : 'Manage your generated applications.'}
+            {isAdmin 
+              ? (isEn ? 'System administration and support dashboard.' : 'Panel de administración y soporte del sistema.') 
+              : (isEn ? 'Manage your generated applications.' : 'Gestiona tus aplicaciones generadas.')}
           </p>
         </div>
         <div className="flex items-center gap-4">
@@ -120,14 +127,16 @@ const Projects = () => {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-accent transition-colors" size={18} />
             <input 
               type="text" 
-              placeholder={isAdmin ? "Search by project or user..." : "Search projects..."}
+              placeholder={isAdmin 
+                ? (isEn ? "Search by project or user..." : "Buscar por proyecto o usuario...") 
+                : (isEn ? "Search projects..." : "Buscar proyectos...")}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 w-full md:w-64 focus:outline-none focus:border-accent/50 focus:bg-white/10 transition-all"
             />
           </div>
           <Link to="/projects/create" className="btn-primary flex items-center justify-center gap-2 whitespace-nowrap">
-            <Plus size={18} /> New Project
+            <Plus size={18} /> {isEn ? "New Project" : "Nuevo Proyecto"}
           </Link>
         </div>
       </header>
@@ -160,16 +169,22 @@ const Projects = () => {
             <Layout size={40} />
           </div>
           <h2 className="text-2xl font-semibold mb-3">
-            {searchTerm ? 'No matches found' : 'No projects found'}
+            {searchTerm 
+              ? (isEn ? 'No matches found' : 'No se encontraron coincidencias') 
+              : (isEn ? 'No projects found' : 'No se encontraron proyectos')}
           </h2>
           <p className="text-white/50 mb-8 max-w-md mx-auto leading-relaxed">
             {searchTerm 
-              ? `We couldn't find any projects matching "${searchTerm}". Try a different search term.` 
-              : "You haven't generated any projects yet. Start by creating a new AI-powered application."}
+              ? (isEn 
+                  ? `We couldn't find any projects matching "${searchTerm}". Try a different search term.` 
+                  : `No pudimos encontrar proyectos que coincidan con "${searchTerm}". Intenta con otro término.`)
+              : (isEn 
+                  ? "You haven't generated any projects yet. Start by creating a new AI-powered application."
+                  : "Aún no has generado ningún proyecto. Comienza creando una nueva aplicación impulsada por IA.")}
           </p>
           {!searchTerm && (
             <Link to="/projects/create" className="btn-primary inline-flex items-center justify-center gap-2">
-              <Plus size={18} /> Create your first project
+              <Plus size={18} /> {isEn ? "Create your first project" : "Crea tu primer proyecto"}
             </Link>
           )}
         </div>
@@ -246,7 +261,7 @@ const Projects = () => {
                   to={`/projects/${project.uid || project._id}`}
                   className="flex items-center gap-1 text-sm text-accent hover:text-white transition-colors font-medium"
                 >
-                  Details <ExternalLink size={14} />
+                  {isEn ? "Details" : "Detalles"} <ExternalLink size={14} />
                 </Link>
               </div>
             </motion.div>
@@ -273,8 +288,10 @@ const Projects = () => {
             >
               <div className="p-6 border-b border-white/10 flex justify-between items-center bg-white/5">
                 <div>
-                  <h3 className="text-xl font-bold">Edit Project</h3>
-                  <p className="text-xs text-white/40">Modify all aspects of your AI application.</p>
+                  <h3 className="text-xl font-bold">{isEn ? "Edit Project" : "Editar Proyecto"}</h3>
+                  <p className="text-xs text-white/40">
+                    {isEn ? "Modify all aspects of your AI application." : "Modifica todos los aspectos de tu aplicación de IA."}
+                  </p>
                 </div>
                 <button onClick={() => setEditingProject(null)} className="text-white/40 hover:text-white transition-colors">
                   <X size={20} />
@@ -284,10 +301,14 @@ const Projects = () => {
               <form onSubmit={handleUpdate} className="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar">
                 {/* Basic Section */}
                 <section className="space-y-4">
-                  <h4 className="text-sm font-semibold text-accent uppercase tracking-wider">Basic Information</h4>
+                  <h4 className="text-sm font-semibold text-accent uppercase tracking-wider">
+                    {isEn ? "Basic Information" : "Información Básica"}
+                  </h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-xs font-medium text-white/50 ml-1">Project Name</label>
+                      <label className="text-xs font-medium text-white/50 ml-1">
+                        {isEn ? "Project Name" : "Nombre del Proyecto"}
+                      </label>
                       <input 
                         type="text" 
                         value={editingProject.name}
@@ -297,21 +318,25 @@ const Projects = () => {
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-medium text-white/50 ml-1">Business Type</label>
+                      <label className="text-xs font-medium text-white/50 ml-1">
+                        {isEn ? "Business Type" : "Tipo de Negocio"}
+                      </label>
                       <select 
                         value={editingProject.type}
                         onChange={(e) => setEditingProject({...editingProject, type: e.target.value})}
                         className="input-field py-2"
                       >
-                        <option value="Restaurante">Restaurante</option>
-                        <option value="Hotel">Hotel</option>
-                        <option value="Tienda">Tienda</option>
-                        <option value="Otro">Otro</option>
+                        <option value="Restaurante">{isEn ? "Restaurant" : "Restaurante"}</option>
+                        <option value="Hotel">{isEn ? "Hotel" : "Hotel"}</option>
+                        <option value="Tienda">{isEn ? "Store" : "Tienda"}</option>
+                        <option value="Otro">{isEn ? "Other" : "Otro"}</option>
                       </select>
                     </div>
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-medium text-white/50 ml-1">Short Description</label>
+                    <label className="text-xs font-medium text-white/50 ml-1">
+                      {isEn ? "Short Description" : "Descripción Corta"}
+                    </label>
                     <textarea 
                       value={editingProject.description}
                       onChange={(e) => setEditingProject({...editingProject, description: e.target.value})}
@@ -323,33 +348,41 @@ const Projects = () => {
 
                 {/* AI Config Section */}
                 <section className="space-y-4">
-                  <h4 className="text-sm font-semibold text-accent uppercase tracking-wider">AI Configuration</h4>
+                  <h4 className="text-sm font-semibold text-accent uppercase tracking-wider">
+                    {isEn ? "AI Configuration" : "Configuración de IA"}
+                  </h4>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-medium text-white/50 ml-1">Context & Instructions</label>
+                    <label className="text-xs font-medium text-white/50 ml-1">
+                      {isEn ? "Context & Instructions" : "Contexto e Instrucciones"}
+                    </label>
                     <textarea 
                       value={editingProject.context || ''}
                       onChange={(e) => setEditingProject({...editingProject, context: e.target.value})}
                       className="input-field py-2 min-h-[100px] resize-none"
-                      placeholder="e.g. Vendemos pizzas artesanales hechas en horno de leña..."
+                      placeholder={isEn ? "e.g. We sell pizzas..." : "ej. Vendemos pizzas..."}
                     />
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-xs font-medium text-white/50 ml-1">Voice Tone</label>
+                      <label className="text-xs font-medium text-white/50 ml-1">
+                        {isEn ? "Voice Tone" : "Tono de Voz"}
+                      </label>
                       <select 
                         value={editingProject.voiceTone || 'Profesional'}
                         onChange={(e) => setEditingProject({...editingProject, voiceTone: e.target.value})}
                         className="input-field py-2"
                       >
-                        <option value="Formal">Formal</option>
-                        <option value="Amigable">Amigable</option>
-                        <option value="Profesional">Profesional</option>
-                        <option value="Casual">Casual</option>
-                        <option value="Persuasivo">Persuasivo</option>
+                        <option value="Formal">{isEn ? "Formal" : "Formal"}</option>
+                        <option value="Amigable">{isEn ? "Friendly" : "Amigable"}</option>
+                        <option value="Profesional">{isEn ? "Professional" : "Profesional"}</option>
+                        <option value="Casual">{isEn ? "Casual" : "Casual"}</option>
+                        <option value="Persuasivo">{isEn ? "Persuasive" : "Persuasivo"}</option>
                       </select>
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-medium text-white/50 ml-1">Language</label>
+                      <label className="text-xs font-medium text-white/50 ml-1">
+                        {isEn ? "Language" : "Idioma"}
+                      </label>
                       <select 
                         value={editingProject.language || 'es-ES'}
                         onChange={(e) => setEditingProject({...editingProject, language: e.target.value})}
@@ -361,35 +394,41 @@ const Projects = () => {
                       </select>
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-medium text-white/50 ml-1">Agent ID</label>
+                      <label className="text-xs font-medium text-white/50 ml-1">
+                        {isEn ? "Agent Name" : "Nombre del Agente"}
+                      </label>
                       <input 
                         type="text" 
                         value={editingProject.agentId || ''}
                         onChange={(e) => setEditingProject({...editingProject, agentId: e.target.value})}
                         className="input-field py-2"
-                        placeholder="agente-123"
+                        placeholder={isEn ? "agent-123" : "agente-123"}
                       />
                     </div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-xs font-medium text-white/50 ml-1">Target Audience</label>
+                      <label className="text-xs font-medium text-white/50 ml-1">
+                        {isEn ? "Target Audience" : "Público Objetivo"}
+                      </label>
                       <input 
                         type="text" 
                         value={editingProject.targetAudience || ''}
                         onChange={(e) => setEditingProject({...editingProject, targetAudience: e.target.value})}
                         className="input-field py-2"
-                        placeholder="e.g. Familias y jóvenes"
+                        placeholder={isEn ? "e.g. Families" : "ej. Familias"}
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-medium text-white/50 ml-1">Business Hours</label>
+                      <label className="text-xs font-medium text-white/50 ml-1">
+                        {isEn ? "Business Hours" : "Horarios de Atención"}
+                      </label>
                       <input 
                         type="text" 
                         value={editingProject.businessHours || ''}
                         onChange={(e) => setEditingProject({...editingProject, businessHours: e.target.value})}
                         className="input-field py-2"
-                        placeholder="e.g. Lun-Dom 12pm-10pm"
+                        placeholder={isEn ? "e.g. Mon-Sun 12pm-10pm" : "ej. Lun-Dom 12pm-10pm"}
                       />
                     </div>
                   </div>
@@ -398,13 +437,15 @@ const Projects = () => {
                 {/* Knowledge Base Section */}
                 <section className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <h4 className="text-sm font-semibold text-accent uppercase tracking-wider">Knowledge Base</h4>
+                    <h4 className="text-sm font-semibold text-accent uppercase tracking-wider">
+                      {isEn ? "Knowledge Base" : "Base de Conocimientos"}
+                    </h4>
                     <button 
                       type="button" 
                       onClick={() => setEditingProject({...editingProject, knowledgeBase: [...(editingProject.knowledgeBase || []), '']})}
                       className="text-accent hover:text-white text-xs flex items-center gap-1 transition-colors"
                     >
-                      <Plus size={14} /> Add Info
+                      <Plus size={14} /> {isEn ? "Add Info" : "Agregar Info"}
                     </button>
                   </div>
                   <div className="space-y-3">
@@ -434,7 +475,9 @@ const Projects = () => {
                       </div>
                     ))}
                     {(!editingProject.knowledgeBase || editingProject.knowledgeBase.length === 0) && (
-                      <p className="text-xs text-white/20 italic text-center py-2">No knowledge base entries yet.</p>
+                      <p className="text-xs text-white/20 italic text-center py-2">
+                        {isEn ? "No knowledge base entries yet." : "Sin entradas en la base de conocimientos aún."}
+                      </p>
                     )}
                   </div>
                 </section>
@@ -442,13 +485,15 @@ const Projects = () => {
                 {/* FAQs Section */}
                 <section className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <h4 className="text-sm font-semibold text-accent uppercase tracking-wider">FAQs</h4>
+                    <h4 className="text-sm font-semibold text-accent uppercase tracking-wider">
+                      {isEn ? "FAQs" : "Preguntas Frecuentes"}
+                    </h4>
                     <button 
                       type="button" 
                       onClick={() => setEditingProject({...editingProject, faqs: [...(editingProject.faqs || []), {question: '', answer: ''}]})}
                       className="text-accent hover:text-white text-xs flex items-center gap-1 transition-colors"
                     >
-                      <Plus size={14} /> Add FAQ
+                      <Plus size={14} /> {isEn ? "Add FAQ" : "Agregar FAQ"}
                     </button>
                   </div>
                   <div className="space-y-4">
@@ -465,7 +510,9 @@ const Projects = () => {
                           <X size={16} />
                         </button>
                         <div className="space-y-1.5">
-                          <label className="text-[10px] font-medium text-white/30 ml-1">Question</label>
+                          <label className="text-[10px] font-medium text-white/30 ml-1">
+                            {isEn ? "Question" : "Pregunta"}
+                          </label>
                           <input 
                             type="text"
                             value={faq.question}
@@ -475,11 +522,13 @@ const Projects = () => {
                               setEditingProject({...editingProject, faqs: newFaqs});
                             }}
                             className="bg-transparent border-none p-0 text-sm w-full focus:ring-0 placeholder:text-white/20"
-                            placeholder="e.g. ¿Tienen parqueo?"
+                            placeholder={isEn ? "e.g. Do you have parking?" : "ej. ¿Tienen parqueo?"}
                           />
                         </div>
                         <div className="space-y-1.5">
-                          <label className="text-[10px] font-medium text-white/30 ml-1">Answer</label>
+                          <label className="text-[10px] font-medium text-white/30 ml-1">
+                            {isEn ? "Answer" : "Respuesta"}
+                          </label>
                           <input 
                             type="text"
                             value={faq.answer}
@@ -489,13 +538,15 @@ const Projects = () => {
                               setEditingProject({...editingProject, faqs: newFaqs});
                             }}
                             className="bg-transparent border-none p-0 text-xs w-full focus:ring-0 text-white/60 placeholder:text-white/10"
-                            placeholder="e.g. Sí, contamos con parqueo privado gratuito..."
+                            placeholder={isEn ? "e.g. Yes..." : "ej. Sí..."}
                           />
                         </div>
                       </div>
                     ))}
                     {(!editingProject.faqs || editingProject.faqs.length === 0) && (
-                      <p className="text-xs text-white/20 italic text-center py-2">No FAQs added yet.</p>
+                      <p className="text-xs text-white/20 italic text-center py-2">
+                        {isEn ? "No FAQs added yet." : "No se han agregado preguntas aún."}
+                      </p>
                     )}
                   </div>
                 </section>
@@ -507,7 +558,7 @@ const Projects = () => {
                   onClick={() => setEditingProject(null)}
                   className="btn-secondary flex-1"
                 >
-                  Cancel
+                  {isEn ? "Cancel" : "Cancelar"}
                 </button>
                 <button 
                   type="submit"
@@ -516,7 +567,7 @@ const Projects = () => {
                   className="btn-primary flex-[2] flex items-center justify-center gap-2"
                 >
                   {actionLoading ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
-                  Save All Changes
+                  {isEn ? "Save All Changes" : "Guardar Cambios"}
                 </button>
               </div>
             </motion.div>
@@ -544,23 +595,27 @@ const Projects = () => {
               <div className="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto mb-6 text-red-400">
                 <Trash2 size={32} />
               </div>
-              <h3 className="text-xl font-bold mb-2">Delete Project?</h3>
+              <h3 className="text-xl font-bold mb-2">
+                {isEn ? "Delete Project?" : "¿Eliminar Proyecto?"}
+              </h3>
               <p className="text-white/50 mb-8">
-                This action cannot be undone. All associated data will be removed from your active dashboard.
+                {isEn 
+                  ? "This action cannot be undone. All associated data will be removed from your active dashboard."
+                  : "Esta acción no se puede deshacer. Todos los datos asociados se eliminarán de tu tablero activo."}
               </p>
               <div className="flex gap-3">
                 <button 
                   onClick={() => setIsDeleting(null)}
                   className="btn-secondary flex-1"
                 >
-                  Cancel
+                  {isEn ? "Cancel" : "Cancelar"}
                 </button>
                 <button 
                   onClick={() => handleDelete(isDeleting)}
                   disabled={actionLoading}
                   className="bg-red-500 hover:bg-red-600 text-white font-medium px-6 py-2.5 rounded-xl flex-1 flex items-center justify-center gap-2 transition-all active:scale-95"
                 >
-                  {actionLoading ? <Loader2 size={18} className="animate-spin" /> : 'Delete'}
+                  {actionLoading ? <Loader2 size={18} className="animate-spin" /> : (isEn ? 'Delete' : 'Eliminar')}
                 </button>
               </div>
             </motion.div>

@@ -4,8 +4,11 @@ import { motion } from "framer-motion";
 import { useAuth } from "../hooks/useAuth";
 import { Eye, EyeOff } from "lucide-react";
 import { GoogleLogin } from "@react-oauth/google";
+import { useLanguage } from "../context/LanguageContext";
 
 const Login = () => {
+  const { lang } = useLanguage();
+  const isEn = lang === 'en';
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -44,8 +47,12 @@ const Login = () => {
       <div className="absolute top-0 right-0 w-32 h-32 bg-accent/30 blur-[80px] rounded-full pointer-events-none" />
 
       <div className="mb-10">
-        <h1 className="text-3xl font-bold tracking-tight mb-2">Welcome back</h1>
-        <p className="text-white/50">Sign in to your account to continue</p>
+        <h1 className="text-3xl font-bold tracking-tight mb-2">
+          {isEn ? "Welcome back" : "Bienvenido de nuevo"}
+        </h1>
+        <p className="text-white/50">
+          {isEn ? "Sign in to your account to continue" : "Inicia sesión en tu cuenta para continuar"}
+        </p>
         {error && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
@@ -72,7 +79,7 @@ const Login = () => {
       >
         <div>
           <label className="block text-sm font-medium text-white/70 mb-2">
-            Email
+            {isEn ? "Email" : "Correo Electrónico"}
           </label>
           <input
             type="email"
@@ -87,14 +94,14 @@ const Login = () => {
         <div>
           <div className="flex justify-between items-center mb-2">
             <label className="block text-sm font-medium text-white/70">
-              Password
+              {isEn ? "Password" : "Contraseña"}
             </label>
             <Link
               to="/forgot-password"
-              title="Click here to reset your password"
+              title={isEn ? "Click here to reset your password" : "Haz clic aquí para restablecer tu contraseña"}
               className="text-xs text-accent hover:underline"
             >
-              Forgot?
+              {isEn ? "Forgot?" : "¿Olvidaste?"}
             </Link>
           </div>
           <div className="relative group">
@@ -128,14 +135,14 @@ const Login = () => {
               className="w-5 h-5 border-2 border-dark/30 border-t-dark rounded-full"
             />
           ) : (
-            "Sign In"
+            isEn ? "Sign In" : "Iniciar Sesión"
           )}
         </button>
 
         <div className="relative flex items-center py-4">
           <div className="flex-grow border-t border-white/10"></div>
           <span className="flex-shrink-0 mx-4 text-white/30 text-xs">
-            OR CONTINUE WITH
+            {isEn ? "OR CONTINUE WITH" : "O CONTINÚA CON"}
           </span>
           <div className="flex-grow border-t border-white/10"></div>
         </div>
@@ -152,12 +159,12 @@ const Login = () => {
         </div>
 
         <p className="text-center text-sm text-white/50 mt-4">
-          Don't have an account?{" "}
+          {isEn ? "Don't have an account?" : "¿No tienes una cuenta?"}{" "}
           <Link
             to="/register"
             className="text-white hover:text-accent transition-colors"
           >
-            Sign up
+            {isEn ? "Sign up" : "Regístrate"}
           </Link>
         </p>
       </form>

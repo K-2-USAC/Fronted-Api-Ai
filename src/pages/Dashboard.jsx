@@ -4,8 +4,11 @@ import { useAuthStore } from '../store/authStore';
 import { useProjects } from '../hooks/useProjects';
 import { Plus, Activity, Cpu, Code2, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../context/LanguageContext';
 
 const Dashboard = () => {
+  const { lang } = useLanguage();
+  const isEn = lang === 'en';
   const user = useAuthStore(state => state.user);
   const { getProjects, isLoading } = useProjects();
   const [projects, setProjects] = useState([]);
@@ -26,26 +29,30 @@ const Dashboard = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px]">
         <Loader2 className="w-10 h-10 animate-spin text-accent mb-4" />
-        <p className="text-white/50">Loading dashboard...</p>
+        <p className="text-white/50">{isEn ? "Loading dashboard..." : "Cargando tablero..."}</p>
       </div>
     );
   }
 
   const stats = [
-    { label: 'Active Projects', value: (projects?.length || 0).toString(), icon: Activity },
-    { label: 'API Calls', value: '24.5k', icon: Cpu },
-    { label: 'Lines Generated', value: '142k', icon: Code2 },
+    { label: isEn ? 'Active Projects' : 'Proyectos Activos', value: (projects?.length || 0).toString(), icon: Activity },
+    { label: isEn ? 'API Calls' : 'Llamadas API', value: '24.5k', icon: Cpu },
+    { label: isEn ? 'Lines Generated' : 'Líneas Generadas', value: '142k', icon: Code2 },
   ];
 
   return (
     <div className="flex flex-col gap-8">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight mb-1">Welcome back, {user?.name?.split(' ')[0]}</h1>
-          <p className="text-white/50">Here's an overview of your workspace.</p>
+          <h1 className="text-3xl font-bold tracking-tight mb-1">
+            {isEn ? `Welcome back, ${user?.name?.split(' ')[0]}` : `Bienvenido de nuevo, ${user?.name?.split(' ')[0]}`}
+          </h1>
+          <p className="text-white/50">
+            {isEn ? "Here's an overview of your workspace." : "Aquí tienes un resumen de tu espacio de trabajo."}
+          </p>
         </div>
         <Link to="/projects/create" className="btn-primary flex items-center justify-center gap-2">
-          <Plus size={18} /> New Project
+          <Plus size={18} /> {isEn ? "New Project" : "Nuevo Proyecto"}
         </Link>
       </header>
 
@@ -70,16 +77,18 @@ const Dashboard = () => {
       </div>
 
       <div className="glass p-8 rounded-2xl mt-4">
-        <h2 className="text-xl font-semibold mb-6">Recent Activity</h2>
+        <h2 className="text-xl font-semibold mb-6">{isEn ? "Recent Activity" : "Actividad Reciente"}</h2>
         {projects.length === 0 ? (
           <div className="text-center py-12">
             <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4 text-white/30">
               <Activity size={32} />
             </div>
-            <h3 className="text-lg font-medium mb-2">No activity yet</h3>
-            <p className="text-white/50 mb-6 max-w-sm mx-auto">Create your first project to start seeing activity in your dashboard.</p>
+            <h3 className="text-lg font-medium mb-2">{isEn ? "No activity yet" : "Sin actividad aún"}</h3>
+            <p className="text-white/50 mb-6 max-w-sm mx-auto">
+              {isEn ? "Create your first project to start seeing activity in your dashboard." : "Crea tu primer proyecto para empezar a ver actividad en tu tablero."}
+            </p>
             <Link to="/projects/create" className="btn-secondary inline-flex items-center gap-2">
-              <Plus size={18} /> Create Project
+              <Plus size={18} /> {isEn ? "Create Project" : "Crear Proyecto"}
             </Link>
           </div>
         ) : (
@@ -99,7 +108,7 @@ const Dashboard = () => {
                     <p className="text-xs text-white/50">{project.type}</p>
                   </div>
                 </div>
-                <div className="text-sm text-white/40">Just now</div>
+                <div className="text-sm text-white/40">{isEn ? "Just now" : "Ahora mismo"}</div>
               </Link>
             ))}
           </div>

@@ -14,15 +14,18 @@ import {
   Globe,
   CalendarDays,
 } from "lucide-react";
+import { useLanguage } from "../context/LanguageContext";
 
 const steps = [
-  { id: 1, title: "Basics", icon: Code2 },
-  { id: 2, title: "Details", icon: Globe },
-  { id: 3, title: "Style", icon: Paintbrush },
-  { id: 4, title: "Extras", icon: CalendarDays },
+  { id: 1, title: "Basics", titleEs: "Básico", icon: Code2 },
+  { id: 2, title: "Details", titleEs: "Detalles", icon: Globe },
+  { id: 3, title: "Style", titleEs: "Estilo", icon: Paintbrush },
+  { id: 4, title: "Extras", titleEs: "Extras", icon: CalendarDays },
 ];
 
 const CreateProjectWizard = () => {
+  const { lang } = useLanguage();
+  const isEn = lang === "en";
   const [currentStep, setCurrentStep] = useState(1);
   const [isGenerating, setIsGenerating] = useState(false);
   const { createProject, error: apiError } = useProjects();
@@ -57,23 +60,23 @@ const CreateProjectWizard = () => {
     setError(null);
     if (step === 1) {
       if (!wizardData.name.trim()) {
-        setError("El nombre del proyecto es obligatorio");
+        setError(isEn ? "Project name is required" : "El nombre del proyecto es obligatorio");
         return false;
       }
       if (!wizardData.type.trim()) {
-        setError("El tipo de negocio es obligatorio");
+        setError(isEn ? "Business type is required" : "El tipo de negocio es obligatorio");
         return false;
       }
     }
     if (step === 2) {
       if (!wizardData.description.trim()) {
-        setError("La descripción es obligatoria");
+        setError(isEn ? "Description is required" : "La descripción es obligatoria");
         return false;
       }
     }
     if (step === 4) {
       if (!wizardData.agentId.trim()) {
-        setError("El Agent ID es obligatorio para la integración");
+        setError(isEn ? "Agent Name is required" : "El Nombre del Agente es obligatorio");
         return false;
       }
     }
@@ -158,10 +161,11 @@ const CreateProjectWizard = () => {
               <Code2 size={32} className="text-white" />
             </div>
           </div>
-          <h2 className="text-3xl font-bold mb-4">Generating Magic...</h2>
+          <h2 className="text-3xl font-bold mb-4">{isEn ? "Generating Magic..." : "Generando Magia..."}</h2>
           <p className="text-white/50 max-w-md mx-auto">
-            Our AI is crafting your project architecture, generating styles, and
-            preparing your workspace.
+            {isEn 
+              ? "Our AI is crafting your project architecture, generating styles, and preparing your workspace."
+              : "Nuestra IA está diseñando la arquitectura de tu proyecto, generando estilos y preparando tu espacio de trabajo."}
           </p>
         </motion.div>
       </div>
@@ -172,7 +176,7 @@ const CreateProjectWizard = () => {
     <div className="max-w-4xl mx-auto w-full flex flex-col min-h-[70vh]">
       <div className="mb-12">
         <h1 className="text-3xl font-bold tracking-tight mb-6">
-          Create New Project
+          {isEn ? "Create New Project" : "Crear Nuevo Proyecto"}
         </h1>
 
         {/* Progress Bar */}
@@ -216,7 +220,7 @@ const CreateProjectWizard = () => {
                     isCurrent ? "text-white" : "text-white/40"
                   }`}
                 >
-                  {step.title}
+                  {isEn ? step.title : step.titleEs}
                 </span>
               </div>
             );
@@ -244,30 +248,30 @@ const CreateProjectWizard = () => {
               <div className="space-y-6 flex-1">
                 <div>
                   <h2 className="text-2xl font-semibold mb-2">
-                    Let's start with the basics
+                    {isEn ? "Let's start with the basics" : "Empecemos con lo básico"}
                   </h2>
                   <p className="text-white/50 mb-8">
-                    What are we building today?
+                    {isEn ? "What are we building today?" : "¿Qué estamos construyendo hoy?"}
                   </p>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-white/70 mb-2">
-                    Project Name
+                    {isEn ? "Project Name" : "Nombre del Proyecto"}
                   </label>
                   <input
                     type="text"
                     value={wizardData.name}
                     onChange={(e) => setWizardData({ name: e.target.value })}
                     className="input-field text-lg"
-                    placeholder="e.g. Acme Corp Website"
+                    placeholder={isEn ? "e.g. My Awesome Project" : "ej. Mi Proyecto Increíble"}
                     autoFocus
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-white/70 mb-2">
-                    Tipo de Negocio
+                    {isEn ? "Business Type" : "Tipo de Negocio"}
                   </label>
                   <select
                     value={wizardData.type}
@@ -275,16 +279,16 @@ const CreateProjectWizard = () => {
                     className="input-field appearance-none bg-dark text-white cursor-pointer"
                   >
                     <option value="Restaurante" className="bg-dark text-white">
-                      Restaurante
+                      {isEn ? "Restaurant" : "Restaurante"}
                     </option>
                     <option value="Hotel" className="bg-dark text-white">
-                      Hotel
+                      {isEn ? "Hotel" : "Hotel"}
                     </option>
                     <option value="Tienda" className="bg-dark text-white">
-                      Tienda
+                      {isEn ? "Store" : "Tienda"}
                     </option>
                     <option value="Otro" className="bg-dark text-white">
-                      Otro
+                      {isEn ? "Other" : "Otro"}
                     </option>
                   </select>
                 </div>
@@ -294,15 +298,17 @@ const CreateProjectWizard = () => {
             {currentStep === 2 && (
               <div className="space-y-6 flex-1">
                 <div>
-                  <h2 className="text-2xl font-semibold mb-2">Tell us more</h2>
+                  <h2 className="text-2xl font-semibold mb-2">
+                    {isEn ? "Tell us more" : "Cuéntanos más"}
+                  </h2>
                   <p className="text-white/50 mb-8">
-                    This helps our AI understand your goals.
+                    {isEn ? "This helps our AI understand your goals." : "Esto ayuda a nuestra IA a entender tus objetivos."}
                   </p>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-white/70 mb-2">
-                    Descripción
+                    {isEn ? "Description" : "Descripción"}
                   </label>
                   <textarea
                     value={wizardData.description}
@@ -310,13 +316,15 @@ const CreateProjectWizard = () => {
                       setWizardData({ description: e.target.value })
                     }
                     className="input-field min-h-[120px] resize-none"
-                    placeholder="Describe qué hace tu negocio y qué deseas lograr..."
+                    placeholder={isEn 
+                      ? "Describe what your business does and what you want to achieve..." 
+                      : "Describe qué hace tu negocio y qué deseas lograr..."}
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-white/70 mb-2">
-                    Público Objetivo (Opcional)
+                    {isEn ? "Target Audience (Optional)" : "Público Objetivo (Opcional)"}
                   </label>
                   <input
                     type="text"
@@ -325,7 +333,7 @@ const CreateProjectWizard = () => {
                       setWizardData({ targetAudience: e.target.value })
                     }
                     className="input-field"
-                    placeholder="ej. Jóvenes profesionales, pequeñas empresas..."
+                    placeholder={isEn ? "e.g. Young professionals..." : "ej. Jóvenes profesionales..."}
                   />
                 </div>
               </div>
@@ -334,15 +342,17 @@ const CreateProjectWizard = () => {
             {currentStep === 3 && (
               <div className="space-y-6 flex-1">
                 <div>
-                  <h2 className="text-2xl font-semibold mb-2">Look & Feel</h2>
+                  <h2 className="text-2xl font-semibold mb-2">
+                    {isEn ? "Look & Feel" : "Apariencia y Estilo"}
+                  </h2>
                   <p className="text-white/50 mb-8">
-                    Choose the vibe of your application.
+                    {isEn ? "Choose the vibe of your application." : "Elige el estilo de tu aplicación."}
                   </p>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-white/70 mb-4">
-                    Tono de Voz
+                    {isEn ? "Voice Tone" : "Tono de Voz"}
                   </label>
                   <div className="grid grid-cols-2 gap-4">
                     {[
@@ -361,7 +371,15 @@ const CreateProjectWizard = () => {
                             : "bg-white/5 border-white/10 hover:border-white/30"
                         }`}
                       >
-                        <span className="font-medium text-sm">{tone}</span>
+                        <span className="font-medium text-sm">
+                          {isEn ? (
+                            tone === "Formal" ? "Formal" :
+                            tone === "Amigable" ? "Friendly" :
+                            tone === "Profesional" ? "Professional" :
+                            tone === "Casual" ? "Casual" :
+                            tone === "Persuasivo" ? "Persuasive" : tone
+                          ) : tone}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -369,7 +387,7 @@ const CreateProjectWizard = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-white/70 mb-2 mt-4">
-                    Idioma del Agente
+                    {isEn ? "Agent Language" : "Idioma del Agente"}
                   </label>
                   <select
                     value={wizardData.language}
@@ -379,16 +397,16 @@ const CreateProjectWizard = () => {
                     className="input-field appearance-none bg-dark text-white cursor-pointer"
                   >
                     <option value="es-GT" className="bg-dark text-white">
-                      Español (Guatemala)
+                      {isEn ? "Spanish (Guatemala)" : "Español (Guatemala)"}
                     </option>
                     <option value="es-ES" className="bg-dark text-white">
-                      Español (España)
+                      {isEn ? "Spanish (Spain)" : "Español (España)"}
                     </option>
                     <option value="en-US" className="bg-dark text-white">
-                      Inglés (US)
+                      {isEn ? "English (US)" : "Inglés (US)"}
                     </option>
                     <option value="en-GB" className="bg-dark text-white">
-                      Inglés (UK)
+                      {isEn ? "English (UK)" : "Inglés (UK)"}
                     </option>
                   </select>
                 </div>
@@ -398,16 +416,18 @@ const CreateProjectWizard = () => {
             {currentStep === 4 && (
               <div className="space-y-6 flex-1">
                 <div>
-                  <h2 className="text-2xl font-semibold mb-2">Final details</h2>
+                  <h2 className="text-2xl font-semibold mb-2">
+                    {isEn ? "Final details" : "Detalles finales"}
+                  </h2>
                   <p className="text-white/50 mb-8">
-                    Add any extra information.
+                    {isEn ? "Add any extra information." : "Agrega cualquier información extra."}
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-white/70 mb-2">
-                      Nombre del Agente
+                      {isEn ? "Agent Name" : "Nombre del Agente"}
                     </label>
                     <input
                       type="text"
@@ -416,12 +436,12 @@ const CreateProjectWizard = () => {
                         setWizardData({ agentId: e.target.value })
                       }
                       className="input-field"
-                      placeholder="ej. Asistente IA"
+                      placeholder={isEn ? "ej. AI Assistant" : "ej. Asistente IA"}
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-white/70 mb-2">
-                      Horarios de Atención
+                      {isEn ? "Business Hours" : "Horarios de Atención"}
                     </label>
                     <input
                       type="text"
@@ -430,20 +450,20 @@ const CreateProjectWizard = () => {
                         setWizardData({ businessHours: e.target.value })
                       }
                       className="input-field"
-                      placeholder="e.g. Lun-Vie, 9am - 6pm"
+                      placeholder={isEn ? "e.g. Mon-Fri, 9am - 6pm" : "ej. Lun-Vie, 9am - 6pm"}
                     />
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-white/70 mb-4 flex justify-between items-center">
-                    <span>Preguntas Frecuentes (FAQs)</span>
+                    <span>{isEn ? "Frequently Asked Questions (FAQs)" : "Preguntas Frecuentes (FAQs)"}</span>
                     <button
                       type="button"
                       onClick={addFaq}
                       className="text-accent hover:text-white flex items-center gap-1 text-xs transition-colors"
                     >
-                      <Plus size={14} /> Agregar FAQ
+                      <Plus size={14} /> {isEn ? "Add FAQ" : "Agregar FAQ"}
                     </button>
                   </label>
 
@@ -461,7 +481,7 @@ const CreateProjectWizard = () => {
                               updateFaq(i, "question", e.target.value)
                             }
                             className="bg-transparent border-none p-0 text-sm w-full focus:ring-0 placeholder:text-white/20"
-                            placeholder="Pregunta"
+                            placeholder={isEn ? "Question" : "Pregunta"}
                           />
                           <input
                             type="text"
@@ -470,7 +490,7 @@ const CreateProjectWizard = () => {
                               updateFaq(i, "answer", e.target.value)
                             }
                             className="bg-transparent border-none p-0 text-xs w-full focus:ring-0 text-white/50 placeholder:text-white/10"
-                            placeholder="Respuesta"
+                            placeholder={isEn ? "Answer" : "Respuesta"}
                           />
                         </div>
                         <button
@@ -494,7 +514,7 @@ const CreateProjectWizard = () => {
             onClick={handleBack}
             className={`btn-secondary flex items-center gap-2 ${currentStep === 1 ? "opacity-0 pointer-events-none" : ""}`}
           >
-            <ArrowLeft size={18} /> Back
+            <ArrowLeft size={18} /> {isEn ? "Back" : "Atrás"}
           </button>
 
           {currentStep < steps.length ? (
@@ -502,14 +522,14 @@ const CreateProjectWizard = () => {
               onClick={handleNext}
               className="btn-primary flex items-center gap-2"
             >
-              Continue <ArrowRight size={18} />
+              {isEn ? "Continue" : "Continuar"} <ArrowRight size={18} />
             </button>
           ) : (
             <button
               onClick={handleGenerate}
               className="bg-accent text-white px-6 py-3 rounded-full font-medium hover:bg-accent/90 active:scale-95 transition-all duration-300 shadow-[0_0_20px_rgba(99,102,241,0.4)] flex items-center gap-2"
             >
-              Generate Project <CheckCircle2 size={18} />
+              {isEn ? "Generate Project" : "Generar Proyecto"} <CheckCircle2 size={18} />
             </button>
           )}
         </div>

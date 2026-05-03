@@ -22,8 +22,11 @@ import {
   FileText,
   X
 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 const ProjectDetails = () => {
+  const { lang } = useLanguage();
+  const isEn = lang === 'en';
   const { id } = useParams();
   const { getProjectById } = useProjects();
   const { getCallsByProject, getCallDetails, deleteCallRecord, isLoading: callsLoading } = useCalls();
@@ -42,7 +45,7 @@ const ProjectDetails = () => {
 
   const fetchData = useCallback(async () => {
     if (!id || id === 'undefined') {
-      setError('Invalid Project ID');
+      setError(isEn ? 'Invalid Project ID' : 'ID de Proyecto Inválido');
       setIsLoading(false);
       return;
     }
@@ -89,7 +92,7 @@ const ProjectDetails = () => {
       });
       
     } catch (err) {
-      setError(err.message || 'Failed to load project details');
+      setError(err.message || (isEn ? 'Failed to load project details' : 'Error al cargar detalles del proyecto'));
     } finally {
       setIsLoading(false);
     }
@@ -252,7 +255,9 @@ const ProjectDetails = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh]">
         <Loader2 className="w-12 h-12 animate-spin text-accent mb-4" />
-        <p className="text-white/50 animate-pulse">Analyzing project data...</p>
+        <p className="text-white/50 animate-pulse">
+          {isEn ? "Analyzing project data..." : "Analizando datos del proyecto..."}
+        </p>
       </div>
     );
   }
@@ -263,10 +268,12 @@ const ProjectDetails = () => {
         <div className="w-20 h-20 rounded-3xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto mb-6 text-red-400">
           <AlertCircle size={40} />
         </div>
-        <h2 className="text-2xl font-bold mb-2">Oops! Something went wrong</h2>
-        <p className="text-white/50 mb-8">{error || 'Project not found'}</p>
+        <h2 className="text-2xl font-bold mb-2">
+          {isEn ? "Oops! Something went wrong" : "¡Ups! Algo salió mal"}
+        </h2>
+        <p className="text-white/50 mb-8">{error || (isEn ? 'Project not found' : 'Proyecto no encontrado')}</p>
         <Link to="/projects" className="btn-primary inline-flex items-center gap-2">
-          <ArrowLeft size={18} /> Back to Projects
+          <ArrowLeft size={18} /> {isEn ? "Back to Projects" : "Volver a Proyectos"}
         </Link>
       </div>
     );
@@ -281,7 +288,9 @@ const ProjectDetails = () => {
           </Link>
           <div>
             <h1 className="text-3xl font-bold tracking-tight mb-1">{project.name}</h1>
-            <p className="text-white/50">Analytics and call history for this project.</p>
+            <p className="text-white/50">
+              {isEn ? "Analytics and call history for this project." : "Analítica e historial de llamadas de este proyecto."}
+            </p>
           </div>
         </div>
         <div className="flex gap-3">
@@ -290,7 +299,7 @@ const ProjectDetails = () => {
             disabled={calls.length === 0 && !selectedCall}
             className="btn-secondary flex items-center gap-2 text-sm disabled:opacity-30"
           >
-            <FileText size={18} /> Export PDF Summary
+            <FileText size={18} /> {isEn ? "Export PDF Summary" : "Exportar Resumen PDF"}
           </button>
         </div>
       </header>
@@ -298,10 +307,10 @@ const ProjectDetails = () => {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {[
-          { label: 'Total Calls', value: stats.total, icon: PhoneCall, color: 'text-accent' },
-          { label: 'Completed', value: stats.completed, icon: Activity, color: 'text-emerald-400' },
-          { label: 'Failed', value: stats.failed, icon: AlertCircle, color: 'text-red-400' },
-          { label: 'Avg. Duration', value: stats.avgDuration, icon: Clock, color: 'text-purple-400' },
+          { label: isEn ? 'Total Calls' : 'Llamadas Totales', value: stats.total, icon: PhoneCall, color: 'text-accent' },
+          { label: isEn ? 'Completed' : 'Completadas', value: stats.completed, icon: Activity, color: 'text-emerald-400' },
+          { label: isEn ? 'Failed' : 'Fallidas', value: stats.failed, icon: AlertCircle, color: 'text-red-400' },
+          { label: isEn ? 'Avg. Duration' : 'Duración Promedio', value: stats.avgDuration, icon: Clock, color: 'text-purple-400' },
         ].map((stat, i) => (
           <motion.div
             key={i}
@@ -325,19 +334,21 @@ const ProjectDetails = () => {
           <div className="glass rounded-3xl overflow-hidden border border-white/5">
             <div className="p-6 border-b border-white/10 bg-white/5 flex justify-between items-center">
               <h2 className="font-bold flex items-center gap-2">
-                <Phone size={18} className="text-accent" /> Call History
+                <Phone size={18} className="text-accent" /> {isEn ? "Call History" : "Historial de Llamadas"}
               </h2>
-              <span className="text-xs text-white/30">{calls.length} recent records</span>
+              <span className="text-xs text-white/30">
+                {calls.length} {isEn ? "recent records" : "registros recientes"}
+              </span>
             </div>
             
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="text-[10px] uppercase tracking-widest text-white/30 border-b border-white/5">
-                    <th className="px-6 py-4 font-medium">Customer</th>
-                    <th className="px-6 py-4 font-medium">Date</th>
-                    <th className="px-6 py-4 font-medium">Status</th>
-                    <th className="px-6 py-4 font-medium">Duration</th>
+                    <th className="px-6 py-4 font-medium">{isEn ? "Customer" : "Cliente"}</th>
+                    <th className="px-6 py-4 font-medium">{isEn ? "Date" : "Fecha"}</th>
+                    <th className="px-6 py-4 font-medium">{isEn ? "Status" : "Estado"}</th>
+                    <th className="px-6 py-4 font-medium">{isEn ? "Duration" : "Duración"}</th>
                     <th className="px-6 py-4"></th>
                   </tr>
                 </thead>
@@ -373,7 +384,10 @@ const ProjectDetails = () => {
                             call.status === 'active' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' :
                             'bg-red-500/10 text-red-400 border border-red-500/20'
                           }`}>
-                            {call.status}
+                            {isEn ? call.status : (
+                              call.status === 'completed' ? 'Completada' :
+                              call.status === 'active' ? 'Activa' : 'Fallida'
+                            )}
                           </span>
                         </td>
                         <td className="px-6 py-4 text-sm text-white/50">
@@ -388,7 +402,7 @@ const ProjectDetails = () => {
                   {calls.length === 0 && (
                     <tr>
                       <td colSpan="5" className="px-6 py-12 text-center text-white/30 italic">
-                        No calls recorded for this project yet.
+                        {isEn ? "No calls recorded for this project yet." : "No hay llamadas registradas para este proyecto aún."}
                       </td>
                     </tr>
                   )}
@@ -411,7 +425,7 @@ const ProjectDetails = () => {
               >
                 <div className="p-6 border-b border-white/10 bg-accent/5">
                   <div className="flex justify-between items-start mb-4">
-                    <h3 className="font-bold">Call Insights</h3>
+                    <h3 className="font-bold">{isEn ? "Call Insights" : "Detalles de Llamada"}</h3>
                     <button onClick={() => setSelectedCall(null)} className="text-white/30 hover:text-white">
                       <X size={18} />
                     </button>
@@ -424,16 +438,18 @@ const ProjectDetails = () => {
                     <div className="flex items-center gap-3 text-xs">
                       <Clock size={14} className="text-accent" />
                       <span className="text-white/60">
-                        Duration: {selectedCall.endedAt 
+                        {isEn ? "Duration" : "Duración"}: {selectedCall.endedAt 
                           ? `${Math.round((new Date(selectedCall.endedAt) - new Date(selectedCall.startedAt)) / 1000)}s` 
-                          : 'Active'}
+                          : (isEn ? 'Active' : 'Activa')}
                       </span>
                     </div>
                   </div>
                 </div>
 
                 <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
-                  <p className="text-[10px] uppercase tracking-widest text-white/30 mb-2 font-bold">Transcript</p>
+                  <p className="text-[10px] uppercase tracking-widest text-white/30 mb-2 font-bold">
+                    {isEn ? "Transcript" : "Transcripción"}
+                  </p>
                   
                   {selectedCall.messages && selectedCall.messages.length > 0 ? (
                     selectedCall.messages.map((msg, i) => (
@@ -446,7 +462,7 @@ const ProjectDetails = () => {
                           <div className="flex items-center gap-1.5 mb-1 opacity-50">
                             {msg.role === 'user' ? <User size={10} /> : <Bot size={10} />}
                             <span className="uppercase text-[8px] font-bold tracking-tighter">
-                              {msg.role === 'user' ? 'Customer' : 'AI Agent'}
+                              {msg.role === 'user' ? (isEn ? 'Customer' : 'Cliente') : (isEn ? 'AI Agent' : 'Agente IA')}
                             </span>
                           </div>
                           {msg.content}
@@ -455,14 +471,16 @@ const ProjectDetails = () => {
                     ))
                   ) : (
                     <div className="text-center py-8">
-                      <p className="text-xs text-white/20 italic">No transcript available for this call.</p>
+                      <p className="text-xs text-white/20 italic">
+                        {isEn ? "No transcript available for this call." : "No hay transcripción disponible para esta llamada."}
+                      </p>
                     </div>
                   )}
                 </div>
 
                 <div className="p-4 border-t border-white/10 bg-white/5">
                   <button className="w-full btn-secondary text-xs flex items-center justify-center gap-2 text-red-400 hover:bg-red-500/10">
-                    <Trash2 size={14} /> Delete Record
+                    <Trash2 size={14} /> {isEn ? "Delete Record" : "Eliminar Registro"}
                   </button>
                 </div>
               </motion.div>
@@ -471,8 +489,10 @@ const ProjectDetails = () => {
                 <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-4">
                   <MessageSquare size={24} className="text-white/20" />
                 </div>
-                <p className="text-sm font-medium">Select a call</p>
-                <p className="text-xs text-white/30">View detailed transcript and AI interaction</p>
+                <p className="text-sm font-medium">{isEn ? "Select a call" : "Selecciona una llamada"}</p>
+                <p className="text-xs text-white/30">
+                  {isEn ? "View detailed transcript and AI interaction" : "Ver transcripción detallada e interacción de IA"}
+                </p>
               </div>
             )}
           </AnimatePresence>

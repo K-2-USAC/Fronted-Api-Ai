@@ -1,8 +1,9 @@
-import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
 import { Home, AlertCircle, ArrowLeft } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 const NotFound = () => {
+  const { lang } = useLanguage();
+  const isEn = lang === 'en';
   return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-[#0B0C10]">
       <div className="max-w-md w-full text-center">
@@ -41,7 +42,7 @@ const NotFound = () => {
           transition={{ delay: 0.2 }}
           className="text-4xl font-bold tracking-tight mb-4 text-white"
         >
-          Lost in Space?
+          {isEn ? "Lost in Space?" : "¿Perdido en el Espacio?"}
         </motion.h1>
         
         <motion.p 
@@ -50,7 +51,9 @@ const NotFound = () => {
           transition={{ delay: 0.3 }}
           className="text-white/50 mb-10 leading-relaxed"
         >
-          The page you're looking for has vanished into the digital void. Don't worry, we can guide you back to safety.
+          {isEn 
+            ? "The page you're looking for has vanished into the digital void. Don't worry, we can guide you back to safety."
+            : "La página que buscas ha desaparecido en el vacío digital. No te preocupes, podemos guiarte de vuelta."}
         </motion.p>
 
         <motion.div 
@@ -63,13 +66,13 @@ const NotFound = () => {
             to="/dashboard" 
             className="btn-primary w-full sm:w-auto flex items-center justify-center gap-2 px-8"
           >
-            <Home size={18} /> Go to Dashboard
+            <Home size={18} /> {isEn ? "Go to Dashboard" : "Ir al Tablero"}
           </Link>
           <button 
             onClick={() => window.history.back()}
             className="btn-secondary w-full sm:w-auto flex items-center justify-center gap-2 px-8"
           >
-            <ArrowLeft size={18} /> Go Back
+            <ArrowLeft size={18} /> {isEn ? "Go Back" : "Volver"}
           </button>
         </motion.div>
 

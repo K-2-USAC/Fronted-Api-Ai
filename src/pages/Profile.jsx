@@ -19,8 +19,11 @@ import {
   Key
 } from "lucide-react";
 import apiClient from "../api/apiClient";
+import { useLanguage } from "../context/LanguageContext";
 
 const Profile = () => {
+  const { lang } = useLanguage();
+  const isEn = lang === 'en';
   const user = useAuthStore((state) => state.user);
   const updateUser = useAuthStore((state) => state.updateUser);
   const {
@@ -47,11 +50,11 @@ const Profile = () => {
     try {
       setPasswordError('');
       if (!passwordData.oldPassword || !passwordData.newPassword) {
-        setPasswordError('Ambas contraseñas son requeridas');
+        setPasswordError(isEn ? 'Both passwords are required' : 'Ambas contraseñas son requeridas');
         return;
       }
       if (passwordData.newPassword.length < 8) {
-        setPasswordError('La nueva contraseña debe tener al menos 8 caracteres');
+        setPasswordError(isEn ? 'New password must be at least 8 characters' : 'La nueva contraseña debe tener al menos 8 caracteres');
         return;
       }
       
@@ -59,13 +62,13 @@ const Profile = () => {
       const response = await apiClient.patch(`/user/update-password/${userId}`, passwordData);
       
       if (response.data.success) {
-        setSuccessMessage('Contraseña actualizada correctamente');
+        setSuccessMessage(isEn ? 'Password updated successfully' : 'Contraseña actualizada correctamente');
         setIsChangingPassword(false);
         setPasswordData({ oldPassword: '', newPassword: '' });
         setTimeout(() => setSuccessMessage(""), 3000);
       }
     } catch (err) {
-      setPasswordError(err.response?.data?.message || 'Error al actualizar contraseña');
+      setPasswordError(err.response?.data?.message || (isEn ? 'Error updating password' : 'Error al actualizar contraseña'));
     }
   };
 
@@ -104,7 +107,7 @@ const Profile = () => {
 
       if (response.success) {
         updateUser(response.user);
-        setSuccessMessage("Profile updated successfully!");
+        setSuccessMessage(isEn ? "Profile updated successfully!" : "¡Perfil actualizado correctamente!");
         setIsEditing(false);
         // Clear message after 3 seconds
         setTimeout(() => setSuccessMessage(""), 3000);
@@ -135,9 +138,11 @@ const Profile = () => {
   return (
     <div className="max-w-3xl mx-auto flex flex-col gap-8 w-full pb-12">
       <header>
-        <h1 className="text-3xl font-bold tracking-tight mb-1">Perfil</h1>
+        <h1 className="text-3xl font-bold tracking-tight mb-1">{isEn ? "Profile" : "Perfil"}</h1>
         <p className="text-white/50">
-          Gestiona tu información personal y preferencias de cuenta.
+          {isEn 
+            ? "Manage your personal information and account preferences." 
+            : "Gestiona tu información personal y preferencias de cuenta."}
         </p>
       </header>
 
@@ -195,7 +200,7 @@ const Profile = () => {
               {isEditing ? (
                 <>
                   <button onClick={handleCancel} className="btn-secondary">
-                    Cancelar
+                    {isEn ? "Cancel" : "Cancelar"}
                   </button>
                   <button
                     onClick={handleSave}
@@ -205,7 +210,7 @@ const Profile = () => {
                     {isLoading && (
                       <Loader2 size={16} className="animate-spin" />
                     )}
-                    Guardar Cambios
+                    {isEn ? "Save Changes" : "Guardar Cambios"}
                   </button>
                 </>
               ) : (
@@ -213,7 +218,7 @@ const Profile = () => {
                   onClick={() => setIsEditing(true)}
                   className="btn-secondary"
                 >
-                  Editar Perfil
+                  {isEn ? "Edit Profile" : "Editar Perfil"}
                 </button>
               )}
             </div>
@@ -223,7 +228,7 @@ const Profile = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-white/70 flex items-center gap-2">
-                  <User size={16} /> Nombre
+                  <User size={16} /> {isEn ? "First Name" : "Nombre"}
                 </label>
                 {isEditing ? (
                   <input
@@ -233,7 +238,7 @@ const Profile = () => {
                       setFormData({ ...formData, name: e.target.value })
                     }
                     className="input-field"
-                    placeholder="Tu nombre"
+                    placeholder={isEn ? "Your name" : "Tu nombre"}
                   />
                 ) : (
                   <div className="h-12 flex items-center px-4 bg-white/5 border border-white/5 rounded-xl text-white/90">
@@ -244,7 +249,7 @@ const Profile = () => {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-white/70 flex items-center gap-2">
-                  <User size={16} /> Apellido
+                  <User size={16} /> {isEn ? "Surname" : "Apellido"}
                 </label>
                 {isEditing ? (
                   <input
@@ -254,7 +259,7 @@ const Profile = () => {
                       setFormData({ ...formData, surname: e.target.value })
                     }
                     className="input-field"
-                    placeholder="Tu apellido"
+                    placeholder={isEn ? "Your surname" : "Tu apellido"}
                   />
                 ) : (
                   <div className="h-12 flex items-center px-4 bg-white/5 border border-white/5 rounded-xl text-white/90">
@@ -267,19 +272,19 @@ const Profile = () => {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-white/70 flex items-center gap-2">
-                  <Mail size={16} /> Correo Electrónico
+                  <Mail size={16} /> {isEn ? "Email Address" : "Correo Electrónico"}
                 </label>
                 <div className="h-12 flex items-center px-4 bg-white/5 border border-white/5 rounded-xl text-white/40 cursor-not-allowed">
                   {formData.email}
                 </div>
                 <p className="text-[10px] text-white/30 italic">
-                  El correo no se puede cambiar
+                  {isEn ? "Email cannot be changed" : "El correo no se puede cambiar"}
                 </p>
               </div>
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-white/70 flex items-center gap-2">
-                  <Phone size={16} /> Número de Teléfono
+                  <Phone size={16} /> {isEn ? "Phone Number" : "Número de Teléfono"}
                 </label>
                 {isEditing ? (
                   <input
@@ -289,7 +294,7 @@ const Profile = () => {
                       setFormData({ ...formData, phone: e.target.value })
                     }
                     className="input-field"
-                    placeholder="Tu número de teléfono"
+                    placeholder={isEn ? "Your phone number" : "Tu número de teléfono"}
                   />
                 ) : (
                   <div className="h-12 flex items-center px-4 bg-white/5 border border-white/5 rounded-xl text-white/90">
@@ -303,21 +308,21 @@ const Profile = () => {
 
             <div className="pt-6 border-t border-white/10 space-y-6">
               <h3 className="text-lg font-medium mb-4 flex items-center gap-2">
-                <Shield size={20} className="text-accent" /> Seguridad & Cuenta
+                <Shield size={20} className="text-accent" /> {isEn ? "Security & Account" : "Seguridad & Cuenta"}
               </h3>
 
               {/* UID Section */}
               <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
                 <div className="flex items-center justify-between mb-2">
                   <label className="text-xs font-bold text-white/30 uppercase tracking-widest flex items-center gap-2">
-                    <Fingerprint size={14} /> Tu ID Único (UID)
+                    <Fingerprint size={14} /> {isEn ? "Your Unique ID (UID)" : "Tu ID Único (UID)"}
                   </label>
                   <button
                     onClick={() => setShowUid(!showUid)}
                     className="text-xs text-accent hover:text-white transition-colors flex items-center gap-1"
                   >
                     {showUid ? <EyeOff size={14} /> : <Eye size={14} />}
-                    {showUid ? "Ocultar" : "Mostrar ID"}
+                    {showUid ? (isEn ? "Hide" : "Ocultar") : (isEn ? "Show ID" : "Mostrar ID")}
                   </button>
                 </div>
                 <div className="flex items-center gap-3">
@@ -332,20 +337,22 @@ const Profile = () => {
                     onClick={handleCopyUid}
                     disabled={!showUid}
                     className={`p-3 rounded-lg transition-all ${copied ? "bg-emerald-500/20 text-emerald-400" : "bg-white/5 text-white/40 hover:text-white hover:bg-white/10 disabled:opacity-30"}`}
-                    title="Copiar UID"
+                    title={isEn ? "Copy UID" : "Copiar UID"}
                   >
                     {copied ? <Check size={18} /> : <Copy size={18} />}
                   </button>
                 </div>
                 <p className="text-[10px] text-white/20 mt-3 italic">
-                  Utiliza este ID para recuperar tu contraseña si pierdes el acceso a tu cuenta.
+                  {isEn 
+                    ? "Use this ID to recover your password if you lose access to your account." 
+                    : "Utiliza este ID para recuperar tu contraseña si pierdes el acceso a tu cuenta."}
                 </p>
               </div>
 
               <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-4">
                 <h4 className="text-sm font-medium flex items-center gap-2">
                   <Key size={16} className="text-white/50" />
-                  Cambiar Contraseña
+                  {isEn ? "Change Password" : "Cambiar Contraseña"}
                 </h4>
                 
                 {passwordError && (
@@ -358,33 +365,33 @@ const Profile = () => {
                   <div className="space-y-3">
                     <input
                       type="password"
-                      placeholder="Contraseña Actual"
+                      placeholder={isEn ? "Current Password" : "Contraseña Actual"}
                       value={passwordData.oldPassword}
                       onChange={(e) => setPasswordData({...passwordData, oldPassword: e.target.value})}
                       className="input-field text-sm h-10"
                     />
                     <input
                       type="password"
-                      placeholder="Nueva Contraseña (min. 8 caracteres)"
+                      placeholder={isEn ? "New Password (min. 8 chars)" : "Nueva Contraseña (min. 8 caracteres)"}
                       value={passwordData.newPassword}
                       onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})}
                       className="input-field text-sm h-10"
                     />
                     <div className="flex gap-2 pt-2">
                       <button onClick={handleChangePassword} className="btn-primary py-2 text-xs flex-1">
-                        Actualizar
+                        {isEn ? "Update" : "Actualizar"}
                       </button>
                       <button onClick={() => {
                         setIsChangingPassword(false);
                         setPasswordError('');
                       }} className="btn-secondary py-2 text-xs flex-1">
-                        Cancelar
+                        {isEn ? "Cancel" : "Cancelar"}
                       </button>
                     </div>
                   </div>
                 ) : (
                   <button onClick={() => setIsChangingPassword(true)} className="btn-secondary text-sm w-full md:w-auto">
-                    Cambiar Contraseña
+                    {isEn ? "Change Password" : "Cambiar Contraseña"}
                   </button>
                 )}
               </div>
