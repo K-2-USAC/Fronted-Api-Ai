@@ -31,25 +31,28 @@ const DashboardLayout = () => {
       </AnimatePresence>
 
       {/* Sidebar */}
-      <motion.aside
-        animate={{ width: isSidebarOpen ? 240 : 80 }}
-        className={`fixed md:relative z-50 h-screen glass border-r border-white/10 flex flex-col transition-transform duration-300 ${!isSidebarOpen ? '-translate-x-full md:translate-x-0' : 'translate-x-0'}`}
+      <aside
+        className={`fixed md:relative z-50 h-screen glass border-r border-white/10 flex flex-col transition-all duration-300 ease-in-out ${
+          isSidebarOpen 
+            ? 'w-[280px] md:w-[240px] translate-x-0' 
+            : 'w-[280px] md:w-[80px] -translate-x-full md:translate-x-0'
+        }`}
       >
-        <div className="h-20 flex items-center px-6 border-b border-white/10 shrink-0 justify-between">
+        <div className="h-20 flex items-center px-6 border-b border-white/10 shrink-0 justify-between overflow-hidden">
           {(isSidebarOpen || window.innerWidth < 768) && (
-            <Link to="/dashboard" className="text-xl font-bold tracking-tighter truncate">
+            <Link to="/dashboard" className="text-xl font-bold tracking-tighter shrink-0">
               Vox<span className="text-accent">2k</span>
             </Link>
           )}
-          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="hidden md:block text-white/50 hover:text-white">
+          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="hidden md:block text-white/50 hover:text-white shrink-0 ml-auto">
             <Menu size={20} />
           </button>
-          <button onClick={() => setIsSidebarOpen(false)} className="md:hidden text-white/50 hover:text-white">
+          <button onClick={() => setIsSidebarOpen(false)} className="md:hidden text-white/50 hover:text-white shrink-0 ml-auto">
             <X size={20} />
           </button>
         </div>
 
-        <nav className="flex-1 py-8 px-4 flex flex-col gap-2 overflow-y-auto">
+        <nav className="flex-1 py-8 px-4 flex flex-col gap-2 overflow-y-auto custom-scrollbar">
           {navItems.map((item) => {
             const isActive = location.pathname.startsWith(item.path) && (item.path !== '/dashboard' || location.pathname === '/dashboard');
             return (
@@ -63,7 +66,7 @@ const DashboardLayout = () => {
               >
                 <item.icon size={20} className="shrink-0" />
                 <span className={`whitespace-nowrap transition-opacity duration-300 ${!isSidebarOpen ? 'md:opacity-0 md:hidden' : 'opacity-100'}`}>
-                  {item.name}
+                  {item.name === 'Projects' ? 'Proyectos' : item.name === 'Profile' ? 'Perfil' : item.name}
                 </span>
               </Link>
             );
@@ -74,21 +77,21 @@ const DashboardLayout = () => {
           <Link
             to="/projects/create"
             className="w-full btn-primary py-3 flex items-center justify-center gap-2 mb-4 group"
-            title="Create Project"
+            title="Crear Proyecto"
           >
-            <Plus size={20} className="group-hover:rotate-90 transition-transform" />
-            <span className={`whitespace-nowrap ${!isSidebarOpen ? 'md:hidden' : ''}`}>New Project</span>
+            <Plus size={20} className="group-hover:rotate-90 transition-transform shrink-0" />
+            <span className={`whitespace-nowrap ${!isSidebarOpen ? 'md:hidden' : ''}`}>Nuevo Proyecto</span>
           </Link>
           <button
             onClick={logout}
             className="w-full flex items-center gap-4 px-4 py-3 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-xl transition-colors"
-            title="Logout"
+            title="Cerrar Sesión"
           >
             <LogOut size={20} className="shrink-0" />
-            <span className={`whitespace-nowrap ${!isSidebarOpen ? 'md:hidden' : ''}`}>Logout</span>
+            <span className={`whitespace-nowrap ${!isSidebarOpen ? 'md:hidden' : ''}`}>Cerrar Sesión</span>
           </button>
         </div>
-      </motion.aside>
+      </aside>
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto relative">

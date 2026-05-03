@@ -16,7 +16,9 @@ import {
   EyeOff,
   Copy,
   Check,
+  Key
 } from "lucide-react";
+import apiClient from "../api/apiClient";
 
 const Profile = () => {
   const user = useAuthStore((state) => state.user);
@@ -37,6 +39,35 @@ const Profile = () => {
     phone: user?.phone || "",
     email: user?.email || "",
   });
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [passwordData, setPasswordData] = useState({ oldPassword: '', newPassword: '' });
+  const [passwordError, setPasswordError] = useState('');
+
+  const handleChangePassword = async () => {
+    try {
+      setPasswordError('');
+      if (!passwordData.oldPassword || !passwordData.newPassword) {
+        setPasswordError('Ambas contraseñas son requeridas');
+        return;
+      }
+      if (passwordData.newPassword.length < 8) {
+        setPasswordError('La nueva contraseña debe tener al menos 8 caracteres');
+        return;
+      }
+      
+      const userId = user?.uid || user?.id;
+      const response = await apiClient.patch(`/user/update-password/${userId}`, passwordData);
+      
+      if (response.data.success) {
+        setSuccessMessage('Contraseña actualizada correctamente');
+        setIsChangingPassword(false);
+        setPasswordData({ oldPassword: '', newPassword: '' });
+        setTimeout(() => setSuccessMessage(""), 3000);
+      }
+    } catch (err) {
+      setPasswordError(err.response?.data?.message || 'Error al actualizar contraseña');
+    }
+  };
 
   const handleCopyUid = () => {
     const userId = user?.uid || user?.id;
@@ -104,9 +135,9 @@ const Profile = () => {
   return (
     <div className="max-w-3xl mx-auto flex flex-col gap-8 w-full pb-12">
       <header>
-        <h1 className="text-3xl font-bold tracking-tight mb-1">Profile</h1>
+        <h1 className="text-3xl font-bold tracking-tight mb-1">Perfil</h1>
         <p className="text-white/50">
-          Manage your personal information and preferences.
+          Gestiona tu información personal y preferencias de cuenta.
         </p>
       </header>
 
@@ -164,7 +195,7 @@ const Profile = () => {
               {isEditing ? (
                 <>
                   <button onClick={handleCancel} className="btn-secondary">
-                    Cancel
+                    Cancelar
                   </button>
                   <button
                     onClick={handleSave}
@@ -174,7 +205,7 @@ const Profile = () => {
                     {isLoading && (
                       <Loader2 size={16} className="animate-spin" />
                     )}
-                    Save Changes
+                    Guardar Cambios
                   </button>
                 </>
               ) : (
@@ -182,7 +213,7 @@ const Profile = () => {
                   onClick={() => setIsEditing(true)}
                   className="btn-secondary"
                 >
-                  Edit Profile
+                  Editar Perfil
                 </button>
               )}
             </div>
@@ -192,7 +223,7 @@ const Profile = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-white/70 flex items-center gap-2">
-                  <User size={16} /> Name
+                  <User size={16} /> Nombre
                 </label>
                 {isEditing ? (
                   <input
@@ -202,7 +233,7 @@ const Profile = () => {
                       setFormData({ ...formData, name: e.target.value })
                     }
                     className="input-field"
-                    placeholder="Enter your name"
+                    placeholder="Tu nombre"
                   />
                 ) : (
                   <div className="h-12 flex items-center px-4 bg-white/5 border border-white/5 rounded-xl text-white/90">
@@ -213,7 +244,7 @@ const Profile = () => {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-white/70 flex items-center gap-2">
-                  <User size={16} /> Surname
+                  <User size={16} /> Apellido
                 </label>
                 {isEditing ? (
                   <input
@@ -223,7 +254,7 @@ const Profile = () => {
                       setFormData({ ...formData, surname: e.target.value })
                     }
                     className="input-field"
-                    placeholder="Enter your surname"
+                    placeholder="Tu apellido"
                   />
                 ) : (
                   <div className="h-12 flex items-center px-4 bg-white/5 border border-white/5 rounded-xl text-white/90">
@@ -236,19 +267,19 @@ const Profile = () => {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-white/70 flex items-center gap-2">
-                  <Mail size={16} /> Email Address
+                  <Mail size={16} /> Correo Electrónico
                 </label>
                 <div className="h-12 flex items-center px-4 bg-white/5 border border-white/5 rounded-xl text-white/40 cursor-not-allowed">
                   {formData.email}
                 </div>
                 <p className="text-[10px] text-white/30 italic">
-                  Email cannot be changed
+                  El correo no se puede cambiar
                 </p>
               </div>
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-white/70 flex items-center gap-2">
-                  <Phone size={16} /> Phone Number
+                  <Phone size={16} /> Número de Teléfono
                 </label>
                 {isEditing ? (
                   <input
@@ -258,7 +289,7 @@ const Profile = () => {
                       setFormData({ ...formData, phone: e.target.value })
                     }
                     className="input-field"
-                    placeholder="Enter your phone number"
+                    placeholder="Tu número de teléfono"
                   />
                 ) : (
                   <div className="h-12 flex items-center px-4 bg-white/5 border border-white/5 rounded-xl text-white/90">
@@ -272,21 +303,21 @@ const Profile = () => {
 
             <div className="pt-6 border-t border-white/10 space-y-6">
               <h3 className="text-lg font-medium mb-4 flex items-center gap-2">
-                <Shield size={20} className="text-accent" /> Security & Account
+                <Shield size={20} className="text-accent" /> Seguridad & Cuenta
               </h3>
 
               {/* UID Section */}
               <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
                 <div className="flex items-center justify-between mb-2">
                   <label className="text-xs font-bold text-white/30 uppercase tracking-widest flex items-center gap-2">
-                    <Fingerprint size={14} /> Your Unique ID (UID)
+                    <Fingerprint size={14} /> Tu ID Único (UID)
                   </label>
                   <button
                     onClick={() => setShowUid(!showUid)}
                     className="text-xs text-accent hover:text-white transition-colors flex items-center gap-1"
                   >
                     {showUid ? <EyeOff size={14} /> : <Eye size={14} />}
-                    {showUid ? "Hide" : "Show ID"}
+                    {showUid ? "Ocultar" : "Mostrar ID"}
                   </button>
                 </div>
                 <div className="flex items-center gap-3">
@@ -301,21 +332,61 @@ const Profile = () => {
                     onClick={handleCopyUid}
                     disabled={!showUid}
                     className={`p-3 rounded-lg transition-all ${copied ? "bg-emerald-500/20 text-emerald-400" : "bg-white/5 text-white/40 hover:text-white hover:bg-white/10 disabled:opacity-30"}`}
-                    title="Copy UID"
+                    title="Copiar UID"
                   >
                     {copied ? <Check size={18} /> : <Copy size={18} />}
                   </button>
                 </div>
                 <p className="text-[10px] text-white/20 mt-3 italic">
-                  Use this ID to recover your password if you lose access to
-                  your account.
+                  Utiliza este ID para recuperar tu contraseña si pierdes el acceso a tu cuenta.
                 </p>
               </div>
 
-              <div className="flex gap-4">
-                <button className="btn-secondary text-sm">
-                  Change Password
-                </button>
+              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-4">
+                <h4 className="text-sm font-medium flex items-center gap-2">
+                  <Key size={16} className="text-white/50" />
+                  Cambiar Contraseña
+                </h4>
+                
+                {passwordError && (
+                  <div className="text-red-400 text-xs bg-red-500/10 p-2 rounded-lg border border-red-500/20">
+                    {passwordError}
+                  </div>
+                )}
+
+                {isChangingPassword ? (
+                  <div className="space-y-3">
+                    <input
+                      type="password"
+                      placeholder="Contraseña Actual"
+                      value={passwordData.oldPassword}
+                      onChange={(e) => setPasswordData({...passwordData, oldPassword: e.target.value})}
+                      className="input-field text-sm h-10"
+                    />
+                    <input
+                      type="password"
+                      placeholder="Nueva Contraseña (min. 8 caracteres)"
+                      value={passwordData.newPassword}
+                      onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})}
+                      className="input-field text-sm h-10"
+                    />
+                    <div className="flex gap-2 pt-2">
+                      <button onClick={handleChangePassword} className="btn-primary py-2 text-xs flex-1">
+                        Actualizar
+                      </button>
+                      <button onClick={() => {
+                        setIsChangingPassword(false);
+                        setPasswordError('');
+                      }} className="btn-secondary py-2 text-xs flex-1">
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button onClick={() => setIsChangingPassword(true)} className="btn-secondary text-sm w-full md:w-auto">
+                    Cambiar Contraseña
+                  </button>
+                )}
               </div>
             </div>
           </div>
