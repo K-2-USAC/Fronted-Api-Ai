@@ -1,7 +1,11 @@
 import { Outlet, Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useLanguage } from "../context/LanguageContext";
+import { Globe } from "lucide-react";
 
 const MainLayout = () => {
+  const { lang, toggleLanguage } = useLanguage();
+  const isEn = lang === 'en';
   return (
     <div className="min-h-screen flex flex-col relative">
       {/* Background ambient light */}
@@ -18,30 +22,38 @@ const MainLayout = () => {
               href="#features"
               className="text-white/70 hover:text-white transition-colors"
             >
-              Features
+              {isEn ? "Features" : "Funcionalidades"}
             </a>
             <a
               href="#pricing"
               className="text-white/70 hover:text-white transition-colors"
             >
-              Pricing
+              {isEn ? "Pricing" : "Precios"}
             </a>
             <a
               href="#about"
               className="text-white/70 hover:text-white transition-colors"
             >
-              About
+              {isEn ? "About" : "Nosotros"}
             </a>
           </nav>
           <div className="flex items-center gap-4">
+            <button 
+              onClick={toggleLanguage}
+              className="flex items-center gap-1 text-xs font-bold text-white/50 hover:text-white transition-colors bg-white/5 px-2 py-1 rounded-md border border-white/10"
+              title={isEn ? "Switch to Spanish" : "Cambiar a Inglés"}
+            >
+              <Globe size={14} />
+              {isEn ? 'EN' : 'ES'}
+            </button>
             <Link
               to="/login"
               className="text-sm font-medium hover:text-accent transition-colors"
             >
-              Log in
+              {isEn ? "Log in" : "Iniciar Sesión"}
             </Link>
-            <Link to="/register" className="btn-primary text-sm">
-              Get Started
+            <Link to="/register" className="btn-primary text-sm px-4 py-2">
+              {isEn ? "Get Started" : "Empezar"}
             </Link>
           </div>
         </div>
@@ -61,8 +73,9 @@ const MainLayout = () => {
 
       <footer className="border-t border-white/10 py-12 text-center text-sm text-white/50">
         <p>
-          © {new Date().getFullYear()} Vox2k Intelligence. Todos los derechos
-          reservados por Grupo 2k.
+          {isEn 
+            ? `© ${new Date().getFullYear()} Vox2k Intelligence. All rights reserved by Grupo 2k.`
+            : `© ${new Date().getFullYear()} Vox2k Intelligence. Todos los derechos reservados por Grupo 2k.`}
         </p>
       </footer>
     </div>

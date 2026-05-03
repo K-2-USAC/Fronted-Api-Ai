@@ -1,8 +1,12 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight, Zap, Shield, Sparkles } from "lucide-react";
+import { useLanguage } from "../context/LanguageContext";
 
 const Landing = () => {
+  const { lang } = useLanguage();
+  const isEn = lang === 'en';
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -22,18 +26,24 @@ const Landing = () => {
 
   const templates = [
     {
-      name: "Respuestas Inteligentes",
-      desc: "Automatización avanzada para consultas frecuentes con lenguaje natural.",
+      name: isEn ? "Intelligent Responses" : "Respuestas Inteligentes",
+      desc: isEn 
+        ? "Advanced automation for frequent queries using natural language." 
+        : "Automatización avanzada para consultas frecuentes con lenguaje natural.",
       icon: Zap,
     },
     {
-      name: "Análisis Predictivo",
-      desc: "Anticípate a las necesidades del cliente con modelos de IA avanzados.",
+      name: isEn ? "Predictive Analysis" : "Análisis Predictivo",
+      desc: isEn 
+        ? "Anticipate customer needs with advanced AI models." 
+        : "Anticípate a las necesidades del cliente con modelos de IA avanzados.",
       icon: Sparkles,
     },
     {
-      name: "Seguridad de Grado Empresarial",
-      desc: "Encriptación de extremo a extremo en cada interacción.",
+      name: isEn ? "Enterprise-Grade Security" : "Seguridad de Grado Empresarial",
+      desc: isEn 
+        ? "End-to-end encryption in every interaction." 
+        : "Encriptación de extremo a extremo en cada interacción.",
       icon: Shield,
     },
   ];
@@ -51,15 +61,15 @@ const Landing = () => {
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8 text-sm text-accent"
         >
           <Sparkles size={16} />
-          <span>Presentando Vox2k: El Call Center del Futuro</span>
+          <span>{isEn ? "Introducing Vox2k: The Call Center of the Future" : "Presentando Vox2k: El Call Center del Futuro"}</span>
         </motion.div>
 
         <motion.h1
           variants={itemVariants}
           className="text-6xl md:text-8xl font-bold tracking-tighter leading-[0.95] mb-12"
         >
-          Conversaciones <span className="text-white/40 block md:inline">inteligentes</span>
-          <br />a la velocidad de <span className="text-accent relative inline-block">
+          {isEn ? "Intelligent" : "Conversaciones"} <span className="text-white/40 block md:inline">{isEn ? "conversations" : "inteligentes"}</span>
+          <br />{isEn ? "at the speed of" : "a la velocidad de"} <span className="text-accent relative inline-block">
             2k
             <span className="absolute -inset-1 bg-accent/20 blur-xl rounded-full -z-10 animate-pulse" />
           </span>.
@@ -69,9 +79,9 @@ const Landing = () => {
           variants={itemVariants}
           className="text-lg md:text-xl text-white/60 mb-10 max-w-2xl mx-auto leading-relaxed"
         >
-          Transformamos la atención al cliente. Vox2k utiliza modelos avanzados
-          de IA para ofrecer respuestas precisas, humanas y eficientes en cada
-          llamada.
+          {isEn 
+            ? "We transform customer service. Vox2k uses advanced AI models to provide precise, human, and efficient responses on every call."
+            : "Transformamos la atención al cliente. Vox2k utiliza modelos avanzados de IA para ofrecer respuestas precisas, humanas y eficientes en cada llamada."}
         </motion.p>
 
         <motion.div
@@ -82,10 +92,10 @@ const Landing = () => {
             to="/register"
             className="btn-primary w-full sm:w-auto flex items-center justify-center gap-2"
           >
-            Empezar Ahora <ArrowRight size={18} />
+            {isEn ? "Get Started" : "Empezar Ahora"} <ArrowRight size={18} />
           </Link>
           <a href="#features" className="btn-secondary w-full sm:w-auto text-center">
-            Ver Funcionalidades
+            {isEn ? "View Features" : "Ver Funcionalidades"}
           </a>
         </motion.div>
       </motion.div>
@@ -100,11 +110,12 @@ const Landing = () => {
       >
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold tracking-tight mb-4">
-            Potencia tu Call Center
+            {isEn ? "Power Your Call Center" : "Potencia tu Call Center"}
           </h2>
           <p className="text-white/50">
-            Nuestra IA genera interacciones de nivel empresarial desde el primer
-            segundo.
+            {isEn 
+              ? "Our AI generates enterprise-grade interactions from the first second."
+              : "Nuestra IA genera interacciones de nivel empresarial desde el primer segundo."}
           </p>
         </div>
 
