@@ -1,10 +1,26 @@
-import { useState } from "react";
+import { memo, useCallback, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "../hooks/useAuth";
 import { Eye, EyeOff } from "lucide-react";
 import { GoogleLogin } from "@react-oauth/google";
 import { useLanguage } from "../context/LanguageContext";
+
+const GoogleLoginButton = memo(function GoogleLoginButton({
+  onSuccess,
+  onError,
+}) {
+  return (
+    <GoogleLogin
+      onSuccess={onSuccess}
+      onError={onError}
+      theme="filled_black"
+      shape="rectangular"
+      size="large"
+      text="continue_with"
+    />
+  );
+});
 
 const Login = () => {
   const { lang } = useLanguage();
@@ -27,7 +43,7 @@ const Login = () => {
     }
   };
 
-  const handleGoogleSuccess = async (credentialResponse) => {
+  const handleGoogleSuccess = useCallback(async (credentialResponse) => {
     try {
       if (credentialResponse.credential) {
         await loginWithGoogle(credentialResponse.credential);
@@ -36,11 +52,11 @@ const Login = () => {
     } catch (err) {
       console.error("Google login failed:", err);
     }
-  };
+  }, [loginWithGoogle, navigate]);
 
-  const handleGoogleError = () => {
+  const handleGoogleError = useCallback(() => {
     console.error("Google Login Failed");
-  };
+  }, []);
 
   return (
     <div className="glass p-8 md:p-12 rounded-3xl w-full border border-white/10 shadow-2xl relative overflow-hidden">
@@ -148,13 +164,9 @@ const Login = () => {
         </div>
 
         <div className="flex justify-center w-full">
-          <GoogleLogin
+          <GoogleLoginButton
             onSuccess={handleGoogleSuccess}
             onError={handleGoogleError}
-            theme="filled_black"
-            shape="rectangular"
-            size="large"
-            text="continue_with"
           />
         </div>
 
