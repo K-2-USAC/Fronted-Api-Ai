@@ -14,6 +14,15 @@ apiClient.interceptors.request.use(
   async (config) => {
     const token = useAuthStore.getState().token;
 
+    const isFormData = config.data instanceof FormData;
+
+    if (isFormData) {
+      delete config.headers['Content-Type'];
+      delete config.headers['content-type'];
+    } else if (config.headers) {
+      config.headers['Content-Type'] = 'application/json';
+    }
+
     // If we have a token in JS (e.g. from a previous version or if the API also sends it in body), send it.
     // Otherwise, browser cookies will handle it if withCredentials is true.
     if (token) {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useWizardStore } from "../store/projectStore";
@@ -14,6 +14,9 @@ import {
   Globe,
   CalendarDays,
   AlertCircle,
+  Upload,
+  FileText,
+  Sparkles,
 } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
 
@@ -29,23 +32,16 @@ const CreateProjectWizard = () => {
   const isEn = lang === "en";
   const [currentStep, setCurrentStep] = useState(1);
   const [isGenerating, setIsGenerating] = useState(false);
-  const { createProject, error: apiError } = useProjects();
+  const [pdfFile, setPdfFile] = useState(null);
+  const [isAnalyzingPdf, setIsAnalyzingPdf] = useState(false);
+  const [pdfSummary, setPdfSummary] = useState(null);
+  const { createProject, previewProjectFromPdf, error: apiError } = useProjects();
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
   const { wizardData, setWizardData, resetWizard } = useWizardStore();
 
-  // Handle API error
-  useEffect(() => {
-    if (apiError) setError(apiError);
-  }, [apiError]);
-
-  // Cleanup on unmount if not generated
-  useEffect(() => {
-    return () => {
-      // Don't reset if we're just navigating between steps, only on full unmount
-    };
-  }, []);
+  const displayedError = error || apiError;
 
   const handleNext = () => {
     if (validateStep(currentStep)) {
@@ -59,8 +55,10 @@ const CreateProjectWizard = () => {
 
   const validateStep = (step) => {
     setError(null);
+    const hasPdf = Boolean(pdfFile);
+
     if (step === 1) {
-      if (!wizardData.name.trim()) {
+      if (!hasPdf && !wizardData.name.trim()) {
         setError(isEn ? "Project name is required" : "El nombre del proyecto es obligatorio");
         return false;
       }
@@ -70,18 +68,91 @@ const CreateProjectWizard = () => {
       }
     }
     if (step === 2) {
-      if (!wizardData.description.trim()) {
+      if (!hasPdf && !wizardData.description.trim()) {
         setError(isEn ? "Description is required" : "La descripción es obligatoria");
         return false;
       }
     }
-    if (step === 4) {
-      if (!wizardData.agentId.trim()) {
-        setError(isEn ? "Agent Name is required" : "El Nombre del Agente es obligatorio");
-        return false;
-      }
-    }
+
     return true;
+  };
+
+  const buildFormData = () => {
+    const formData = new FormData();
+
+    if (pdfFile) {
+      formData.append("pdf", pdfFile);
+    }
+
+    Object.entries(wizardData).forEach(([key, value]) => {
+      if (value === undefined || value === null || value === "") {
+        return;
+      }
+
+      if (Array.isArray(value)) {
+        formData.append(key, JSON.stringify(value));
+        return;
+      }
+
+      formData.append(key, String(value));
+    });
+
+    return formData;
+  };
+
+  const applyPdfSuggestion = (suggestedProject) => {
+    setWizardData({
+      ...suggestedProject,
+      knowledgeBase: suggestedProject.knowledgeBase?.length ? suggestedProject.knowledgeBase : [""],
+      faqs: suggestedProject.faqs?.length ? suggestedProject.faqs : [{ question: "", answer: "" }],
+    });
+  };
+
+  const handlePdfChange = (event) => {
+    const file = event.target.files?.[0] || null;
+    setError(null);
+    setPdfSummary(null);
+
+    if (!file) {
+      setPdfFile(null);
+      return;
+    }
+
+    if (file.type !== "application/pdf") {
+      setPdfFile(null);
+      setError(isEn ? "Only PDF files are allowed" : "Solo se permiten archivos PDF");
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      setPdfFile(null);
+      setError(isEn ? "PDF file must be smaller than 10 MB" : "El archivo PDF debe ser menor a 10 MB");
+      return;
+    }
+
+    setPdfFile(file);
+  };
+
+  const handlePreviewPdf = async () => {
+    if (!pdfFile) {
+      setError(isEn ? "Please select a PDF first" : "Selecciona primero un PDF");
+      return;
+    }
+
+    setIsAnalyzingPdf(true);
+    setError(null);
+
+    try {
+      const formData = buildFormData();
+      const result = await previewProjectFromPdf(formData);
+      applyPdfSuggestion(result.suggestedProject);
+      setPdfSummary(result.pdf);
+      setCurrentStep(1);
+    } catch (err) {
+      console.error("Failed to analyze PDF:", err);
+    } finally {
+      setIsAnalyzingPdf(false);
+    }
   };
 
   const handleGenerate = async () => {
@@ -90,10 +161,12 @@ const CreateProjectWizard = () => {
     setIsGenerating(true);
 
     try {
-      // Real API call to backend POST /projects
-      await createProject(wizardData);
+      const payload = pdfFile ? buildFormData() : wizardData;
+      await createProject(payload);
 
       resetWizard();
+      setPdfFile(null);
+      setPdfSummary(null);
       navigate("/dashboard");
     } catch (err) {
       console.error("Failed to generate project:", err);
@@ -118,25 +191,6 @@ const CreateProjectWizard = () => {
     }
     const newFaqs = wizardData.faqs.filter((_, i) => i !== index);
     setWizardData({ faqs: newFaqs });
-  };
-
-  const addKB = () => {
-    setWizardData({ knowledgeBase: [...wizardData.knowledgeBase, ""] });
-  };
-
-  const updateKB = (index, value) => {
-    const newKB = [...wizardData.knowledgeBase];
-    newKB[index] = value;
-    setWizardData({ knowledgeBase: newKB });
-  };
-
-  const removeKB = (index) => {
-    if (wizardData.knowledgeBase.length <= 1) {
-      setWizardData({ knowledgeBase: [""] });
-      return;
-    }
-    const newKB = wizardData.knowledgeBase.filter((_, i) => i !== index);
-    setWizardData({ knowledgeBase: newKB });
   };
 
   if (isGenerating) {
@@ -192,7 +246,7 @@ const CreateProjectWizard = () => {
             transition={{ duration: 0.3 }}
           />
 
-          {steps.map((step, i) => {
+          {steps.map((step) => {
             const isCompleted = currentStep > step.id;
             const isCurrent = currentStep === step.id;
 
@@ -239,10 +293,10 @@ const CreateProjectWizard = () => {
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="h-full flex flex-col"
           >
-            {error && (
+            {displayedError && (
               <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs md:text-sm flex items-center gap-3">
                 <AlertCircle size={16} />
-                {error}
+                {displayedError}
               </div>
             )}
 
@@ -257,6 +311,77 @@ const CreateProjectWizard = () => {
                   </p>
                 </div>
 
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4 md:p-5 space-y-4">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-semibold text-white flex items-center gap-2">
+                        <FileText size={16} className="text-accent" />
+                        {isEn ? "Import from PDF" : "Importar desde PDF"}
+                      </p>
+                      <p className="text-xs text-white/45 mt-1">
+                        {isEn
+                          ? "Upload a PDF to prefill the wizard automatically."
+                          : "Sube un PDF para autocompletar el formulario."}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handlePreviewPdf}
+                      disabled={!pdfFile || isAnalyzingPdf}
+                      className="btn-secondary inline-flex items-center gap-2 py-2.5 text-sm disabled:opacity-50"
+                    >
+                      {isAnalyzingPdf ? (
+                        <>
+                          <Sparkles size={16} className="animate-pulse" />
+                          {isEn ? "Analyzing..." : "Analizando..."}
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles size={16} />
+                          {isEn ? "Preview PDF" : "Previsualizar PDF"}
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                  <label className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-white/15 bg-black/10 px-4 py-6 text-center cursor-pointer hover:border-accent/40 transition-colors">
+                    <Upload size={20} className="text-accent" />
+                    <div>
+                      <p className="text-sm font-medium text-white">
+                        {pdfFile
+                          ? pdfFile.name
+                          : isEn ? "Drop or select a PDF file" : "Suelta o selecciona un archivo PDF"}
+                      </p>
+                      <p className="text-xs text-white/40 mt-1">
+                        {isEn ? "Maximum size: 10 MB" : "Tamaño máximo: 10 MB"}
+                      </p>
+                    </div>
+                    <input
+                      type="file"
+                      accept="application/pdf"
+                      onChange={handlePdfChange}
+                      className="hidden"
+                    />
+                  </label>
+
+                  {pdfSummary && (
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                      <div className="rounded-xl bg-white/5 border border-white/5 p-3">
+                        <p className="text-white/45 mb-1">{isEn ? "File" : "Archivo"}</p>
+                        <p className="text-white font-medium truncate">{pdfFile?.name}</p>
+                      </div>
+                      <div className="rounded-xl bg-white/5 border border-white/5 p-3">
+                        <p className="text-white/45 mb-1">{isEn ? "Pages" : "Páginas"}</p>
+                        <p className="text-white font-medium">{pdfSummary.pages}</p>
+                      </div>
+                      <div className="rounded-xl bg-white/5 border border-white/5 p-3">
+                        <p className="text-white/45 mb-1">{isEn ? "Text length" : "Texto leído"}</p>
+                        <p className="text-white font-medium">{pdfSummary.textLength}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
                 <div className="space-y-4">
                   <div>
                     <label className="block text-xs md:text-sm font-medium text-white/70 mb-2">
@@ -268,6 +393,7 @@ const CreateProjectWizard = () => {
                       onChange={(e) => setWizardData({ name: e.target.value })}
                       className="input-field py-3 text-base"
                       placeholder={isEn ? "e.g. My Project" : "ej. Mi Proyecto"}
+                      disabled={isAnalyzingPdf}
                       autoFocus
                     />
                   </div>
@@ -281,6 +407,7 @@ const CreateProjectWizard = () => {
                         value={wizardData.type}
                         onChange={(e) => setWizardData({ type: e.target.value })}
                         className="input-field py-3 appearance-none bg-dark text-white cursor-pointer pr-10"
+                        disabled={isAnalyzingPdf}
                       >
                         <option value="Restaurante">{isEn ? "Restaurant" : "Restaurante"}</option>
                         <option value="Hotel">{isEn ? "Hotel" : "Hotel"}</option>
@@ -319,6 +446,7 @@ const CreateProjectWizard = () => {
                       placeholder={isEn 
                         ? "Describe your business goals..." 
                         : "Describe los objetivos de tu negocio..."}
+                      disabled={isAnalyzingPdf}
                     />
                   </div>
 
@@ -334,6 +462,7 @@ const CreateProjectWizard = () => {
                       }
                       className="input-field py-3"
                       placeholder={isEn ? "e.g. Students, Professionals" : "ej. Estudiantes, Profesionales"}
+                      disabled={isAnalyzingPdf}
                     />
                   </div>
                 </div>
@@ -397,6 +526,7 @@ const CreateProjectWizard = () => {
                         setWizardData({ language: e.target.value })
                       }
                       className="input-field py-3 appearance-none bg-dark pr-10"
+                      disabled={isAnalyzingPdf}
                     >
                       <option value="es-GT">Español (GT)</option>
                       <option value="es-ES">Español (ES)</option>
@@ -423,20 +553,6 @@ const CreateProjectWizard = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs md:text-sm font-medium text-white/70 mb-2">
-                      {isEn ? "Agent Name" : "Nombre del Agente"}
-                    </label>
-                    <input
-                      type="text"
-                      value={wizardData.agentId}
-                      onChange={(e) =>
-                        setWizardData({ agentId: e.target.value })
-                      }
-                      className="input-field py-3"
-                      placeholder={isEn ? "ej. AI Assistant" : "ej. Asistente IA"}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs md:text-sm font-medium text-white/70 mb-2">
                       {isEn ? "Hours" : "Horarios"}
                     </label>
                     <input
@@ -447,6 +563,22 @@ const CreateProjectWizard = () => {
                       }
                       className="input-field py-3"
                       placeholder="9am - 6pm"
+                      disabled={isAnalyzingPdf}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs md:text-sm font-medium text-white/70 mb-2">
+                      {isEn ? "Agent Name (optional)" : "Nombre del Agente (opcional)"}
+                    </label>
+                    <input
+                      type="text"
+                      value={wizardData.agentId}
+                      onChange={(e) =>
+                        setWizardData({ agentId: e.target.value })
+                      }
+                      className="input-field py-3"
+                      placeholder={isEn ? "e.g. AI Assistant" : "ej. Asistente IA"}
+                      disabled={isAnalyzingPdf}
                     />
                   </div>
                 </div>
@@ -478,6 +610,7 @@ const CreateProjectWizard = () => {
                             }
                             className="bg-transparent border-none p-0 text-sm w-full focus:ring-0 placeholder:text-white/20 font-medium"
                             placeholder={isEn ? "Question" : "Pregunta"}
+                            disabled={isAnalyzingPdf}
                           />
                           <input
                             type="text"
@@ -487,6 +620,7 @@ const CreateProjectWizard = () => {
                             }
                             className="bg-transparent border-none p-0 text-xs w-full focus:ring-0 text-white/40 placeholder:text-white/10"
                             placeholder={isEn ? "Answer" : "Respuesta"}
+                            disabled={isAnalyzingPdf}
                           />
                         </div>
                         <button
@@ -523,7 +657,7 @@ const CreateProjectWizard = () => {
           ) : (
             <button
               onClick={handleGenerate}
-              disabled={isGenerating}
+              disabled={isGenerating || isAnalyzingPdf}
               className="bg-accent text-white px-6 py-2.5 rounded-full font-bold hover:bg-accent/90 active:scale-95 transition-all text-sm shadow-[0_0_20px_rgba(99,102,241,0.3)] flex items-center gap-2 disabled:opacity-50"
             >
               {isEn ? "Create" : "Crear"} <CheckCircle2 size={16} />
