@@ -6,7 +6,7 @@ import App from './App.jsx'
 
 import { LanguageProvider } from './context/LanguageContext';
 
-const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "758038044042-hik4uqmbc4d96sq7tkojl9q32smnursc.apps.googleusercontent.com";
+const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "970773911619-d00i5k5ga414khpvp5rcbis9lvt4jjj3.apps.googleusercontent.com";
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

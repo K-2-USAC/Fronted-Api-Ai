@@ -52,6 +52,20 @@ export const useProjects = () => {
     }
   }, []);
 
+  const previewProjectFromPdf = useCallback(async (formData) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await apiClient.post('/projects/parse-pdf', formData);
+      return response.data;
+    } catch (err) {
+      setError(err.response?.data?.message || 'Error analyzing PDF');
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   const updateProject = useCallback(async (id, projectData) => {
     setIsLoading(true);
     setError(null);
@@ -98,6 +112,7 @@ export const useProjects = () => {
     getProjects,
     getProjectById,
     createProject,
+    previewProjectFromPdf,
     updateProject,
     deleteProject,
     activateProject,
